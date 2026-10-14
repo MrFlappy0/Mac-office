@@ -4,11 +4,11 @@
 
 **Traitement de texte open source pour macOS, 100 % natif.**
 
-Refonte complète en Swift/AppKit : plus de WebView, plus de HTML — un vrai `NSDocument` + `NSTextView`, comme TextEdit, avec tout le confort d'un traitement de texte moderne.
+Interface à onglets façon Word (Accueil, Insertion, Mise en page, Affichage) sur le design Apple de Pages, portée par une coquille native Swift/AppKit : fenêtres, menus, fichiers, impression. Le format se choisit au moment d'enregistrer — **Word (.docx) par défaut**.
 
-`Swift` `AppKit` `NSDocument` `Zéro dépendance` `Open source (MIT)`
+`Swift` `AppKit` `WebKit` `Onglets` `Zéro dépendance` `Open source (MIT)`
 
-[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://www.apple.com/macos) [![Version](https://img.shields.io/badge/version-0.6-0a66c2)](../../releases) [![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE) [![Release](https://img.shields.io/badge/release-DMG%20auto--publi%C3%A9-blueviolet)](../../releases)
+[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://www.apple.com/macos) [![Version](https://img.shields.io/badge/version-0.7-0a66c2)](../../releases) [![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE) [![Release](https://img.shields.io/badge/release-DMG%20auto--publi%C3%A9-blueviolet)](../../releases)
 
 </div>
 
@@ -43,10 +43,10 @@ open Paper.app
 
 ## Philosophie
 
-- **100 % natif** : Swift + AppKit uniquement. La consommation mémoire et la réactivité sont celles d'un composant système, pas d'un navigateur embarqué.
-- **Vraie application document** : `NSDocument` apporte l'enregistrement, la gestion des fenêtres, les alertes de fermeture, l'undo natif.
-- **L'extension se choisit à l'enregistrement** : plus de boutons de format dans l'interface. Un seul bouton Enregistrer ; le panneau propose les formats, **Word (.docx) par défaut**.
-- **Zéro dépendance** : même l'export .docx est écrit à la main (conteneur ZIP + Office Open XML).
+- **Présentation soignée** : onglets à la Word, charte Apple (segments, accents bleus, SF), page A4 centrale, plan de navigation.
+- **Coquille 100 % native** : menus, fenêtres, panneaux d'enregistrement, impression — Swift/AppKit.
+- **L'extension se choisit à l'enregistrement** : un seul bouton Enregistrer ; le panneau propose Word (.docx, par défaut), Word 97 (.doc), HTML et PDF.
+- **Zéro dépendance** : l'export .docx est écrit à la main (conteneur ZIP + Office Open XML), la lecture .docx passe par textutil.
 
 ## Fonctionnalités
 

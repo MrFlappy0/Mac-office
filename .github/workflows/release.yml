@@ -18,11 +18,6 @@ jobs:
       - name: Construire Paper.app et le DMG
         run: ./build.sh
 
-      - name: Vérifier le document .docx de test
-        run: |
-          .build/release/docxprobe /tmp/paper-test.docx
-          unzip -t /tmp/paper-test.docx
-
       - name: Publier la release avec le DMG
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

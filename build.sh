@@ -27,6 +27,7 @@ rm -rf "$APP" "$DMG"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 cp .build/release/Paper "$APP/Contents/MacOS/Paper"
+cp Resources/editor.html "$APP/Contents/Resources/editor.html"
 cp Resources/Paper.icns "$APP/Contents/Resources/Paper.icns"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 

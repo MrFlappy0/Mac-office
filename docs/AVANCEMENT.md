@@ -89,4 +89,18 @@ Ajouté :
 - Format d'impression (runPageLayout:) dans le menu Fichier
 - Diagnostic de lancement (NSLog) : nombre de documents ouverts
 
-Prochaine étape : v0.7 — en-têtes et pieds de page, numérotation des pages, thème sombre.
+Prochaine étape : v0.7 — retour à l'interface à onglets, correctifs d'ouverture.
+
+## v0.7 — 14 octobre 2026 — Retour de l'interface à onglets, correctifs
+
+Décision : l'interface native programmatique de la v0.5/v0.6 était trop spartiate (pas d'onglets, mise en forme sommaire). La v0.7 rétablit l'éditeur à onglets de la v0.4 — visuellement abouti (onglets Accueil, Insertion, Mise en page, Affichage ; charte Apple ; page A4) — dans la coquille native corrigée.
+
+Fait :
+- Onglets façon Word rétablis : Accueil (styles, polices, tailles, gras/italique/souligné/barré, exposant/indice, couleurs, recherche), Insertion (lien, image, tableau, symboles, date, page de garde, ligne), Mise en page (alignements, listes, retraits, interligne, effacer), Affichage (plan, zoom, raccourcis)
+- Correctifs d'ouverture : l'éditeur se charge depuis le bundle avec repli Resources/ en développement ; message de chargement vérifié au lancement (diagnostic NSLog)
+- Un seul bouton Enregistrer : le format (Word .docx par défaut, Word 97 .doc, HTML, PDF) se choisit dans le panneau natif d'enregistrement
+- Menu Réglages (Cmd+,) : police et taille par défaut, marges, correcteur orthographique — appliqués en direct
+- Documents récents dans le menu Fichier
+- Suppression de la cible docxprobe (le générateur .docx vit désormais dans l'éditeur, comme en v0.4)
+
+Prochaine étape : v0.8 — en-têtes et pieds de page, numérotation des pages, thème sombre.
