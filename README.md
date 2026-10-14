@@ -8,7 +8,7 @@ Refonte complète en Swift/AppKit : plus de WebView, plus de HTML — un vrai `N
 
 `Swift` `AppKit` `NSDocument` `Zéro dépendance` `Open source (MIT)`
 
-[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://www.apple.com/macos) [![Version](https://img.shields.io/badge/version-0.5-0a66c2)](../../releases) [![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE) [![Release](https://img.shields.io/badge/release-DMG%20auto--publi%C3%A9-blueviolet)](../../releases)
+[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://www.apple.com/macos) [![Version](https://img.shields.io/badge/version-0.6-0a66c2)](../../releases) [![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE) [![Release](https://img.shields.io/badge/release-DMG%20auto--publi%C3%A9-blueviolet)](../../releases)
 
 </div>
 
@@ -60,7 +60,10 @@ open Paper.app
 - Correcteur orthographique, corrections automatiques (guillemets français, tirets)
 - Barre d'état : mots, caractères, temps de lecture estimé
 - Undo/redo complet, alertes de document non enregistré
-- Impression A4 native avec panneau macOS (export PDF via le menu PDF du panneau)
+- **Zoom** : Cmd+ / Cmd- / Cmd+0 et pincement trackpad (50 % à 300 %)
+- **Export PDF direct** (Cmd+E) : pagination A4 avec marges, sans passer par l'impression
+- **Documents récents** dans le menu Fichier
+- Impression A4 native avec panneau macOS et format d'impression configurable
 
 ## Formats de documents
 
@@ -93,9 +96,11 @@ Les changements s'appliquent immédiatement aux documents ouverts.
 |---|---|
 | `Cmd+N` / `Cmd+O` | Nouveau / Ouvrir |
 | `Cmd+S` / `Cmd+Maj+S` | Enregistrer / Enregistrer sous |
+| `Cmd+E` | Exporter en PDF |
 | `Cmd+P` | Imprimer |
 | `Cmd+B` / `Cmd+I` / `Cmd+U` | Gras / italique / souligné |
-| `Cmd+Alt+F` | Rechercher |
+| `Cmd+F` | Rechercher |
+| `Cmd+Alt+F` | Remplacer |
 | `Cmd+G` / `Cmd+Maj+G` | Occurrence suivante / précédente |
 | `Cmd+Alt+Maj+V` | Coller sans mise en forme |
 | `Cmd+T` | Panneau Fontes |

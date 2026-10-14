@@ -72,4 +72,21 @@ Fait :
 - Correction du build DMG sur GitHub : l'icône est générée une fois et committée (Resources/Paper.icns) — la génération via AppKit NSImage échoue sur les runners sans serveur d'affichage ; build basé sur SwiftPM, vérification du .docx en CI (unzip + docxprobe)
 - Le générateur .docx a été porté en Swift et validé : ZIP intègre (unzip -t), listes et titres relus par textutil
 
-Prochaine étape : v0.6 — thème sombre, pagination à l'écran.
+Prochaine étape : v0.6 — correctif d'ouverture, zoom, export PDF direct, documents récents.
+
+## v0.6 — 14 octobre 2026 — Correctif d'ouverture et fonctions quotidiennes
+
+Corrigé :
+- **Ouverture impossible au lancement** (« Aucun document n'a pu être créé ») : en Swift pur, le nom runtime de la classe est `Paper.PaperDocument`, donc `NSClassFromString("PaperDocument")` échouait et NSDocumentController ne trouvait pas la classe du document. Correction par `@objc(PaperDocument)` + déclaration `NSDocumentClass` dans l'Info.plist + `windowNibName` à nil (fenêtres 100 % programmatiques)
+- Bug du ruban : le délégué était remis à nil juste après avoir été défini
+- Séparateurs de ruban dépréciés remplacés par des espaces standard
+- Recherche : Cmd+F standard, ajout de « Remplacer… » (interface NSTextFinder complète)
+
+Ajouté :
+- Zoom : menu Affichage (Cmd+ / Cmd- / Cmd+0) et geste de pincement natif (NSScrollView, 50 % à 300 %)
+- **Export PDF direct** (Cmd+E) : pagination TextKit manuelle page A4 avec marges, sans passer par le panneau d'impression
+- **Documents récents** : menu Fichier → Ouvrir récent, alimenté à l'ouverture et à l'enregistrement (8 entrées max)
+- Format d'impression (runPageLayout:) dans le menu Fichier
+- Diagnostic de lancement (NSLog) : nombre de documents ouverts
+
+Prochaine étape : v0.7 — en-têtes et pieds de page, numérotation des pages, thème sombre.

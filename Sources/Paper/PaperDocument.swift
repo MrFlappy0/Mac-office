@@ -5,6 +5,7 @@ import PaperCore
 /// Document Paper : contenu riche NSAttributedString, lecture et écriture
 /// selon l'extension choisie dans le panneau d'enregistrement
 /// (par défaut : Word .docx).
+@objc(PaperDocument)
 final class PaperDocument: NSDocument {
 
     var content: NSAttributedString
@@ -21,6 +22,8 @@ final class PaperDocument: NSDocument {
 
     // MARK: - Fenêtre
 
+    override var windowNibName: NSNib.Name? { nil }
+
     override func makeWindowControllers() {
         let editor = EditorViewController()
         editor.document = self
@@ -28,7 +31,6 @@ final class PaperDocument: NSDocument {
         window.styleMask.insert(.resizable)
         window.setContentSize(NSSize(width: 1060, height: 760))
         window.toolbar = EditorToolbar.build(for: self)
-        window.toolbar?.delegate = nil
         let controller = NSWindowController(window: window)
         addWindowController(controller)
         self.editor = editor
@@ -45,6 +47,18 @@ final class PaperDocument: NSDocument {
     override func read(from url: URL, ofType typeName: String) throws {
         content = try Formats.read(url: url)
         editor?.reload()
+        AppSettings.recordRecent(url)
+    }
+
+    override func save(to url: URL, ofType typeName: String,
+                      for saveOperation: NSDocument.SaveOperationType,
+                      completionHandler: @escaping (Error?) -> Void) {
+        super.save(to: url, ofType: typeName, for: saveOperation) { error in
+            if error == nil {
+                AppSettings.recordRecent(url)
+            }
+            completionHandler(error)
+        }
     }
 
     override func data(ofType typeName: String) throws -> Data {
@@ -73,6 +87,76 @@ final class PaperDocument: NSDocument {
             updateChangeCount(.changeDone)
         }
     }
+
+    // MARK: - Zoom
+
+    @objc func zoomIn(_ sender: Any?) { editor?.zoom(by: 0.15) }
+    @objc func zoomOut(_ sender: Any?) { editor?.zoom(by: -0.15) }
+    @objc func zoomReset(_ sender: Any?) { editor?.zoom(to: 1) }
+
+    // MARK: - Export PDF
+
+    @objc func exportPDF(_ sender: Any?) {
+        guard let textView = editor?.textView, let storage = textView.textStorage else { return }
+        let panel = NSSavePanel()
+        panel.canCreateDirectories = true
+        panel.allowedContentTypes = [.pdf]
+        panel.nameFieldStringValue = (displayName ?? "Document") + ".pdf"
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+
+        let pageRect = NSRect(x: 0, y: 0, width: 595.28, height: 841.89)
+        let margin: CGFloat = 56.7
+        let contentSize = NSSize(width: pageRect.width - margin * 2,
+                                 height: pageRect.height - margin * 2)
+
+        let container = NSTextContainer(size: contentSize)
+        container.widthTracksTextView = false
+        let layoutManager = NSLayoutManager()
+        layoutManager.addTextContainer(container)
+        layoutManager.replaceTextStorage(storage)
+
+        let data = NSMutableData()
+        var mediaBox = pageRect
+        guard let consumer = CGDataConsumer(data: data as CFMutableData),
+              let pdfContext = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) else { return }
+
+        let graphicsContext = NSGraphicsContext(cgContext: pdfContext, flipped: true)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = graphicsContext
+
+        let total = storage.length
+        let fullGlyphs = layoutManager.glyphRange(
+            forCharacterRange: NSRange(location: 0, length: total), actualCharacterRange: nil)
+        let bounds = layoutManager.boundingRect(forGlyphRange: fullGlyphs, in: container)
+        let pageCount = max(1, Int(ceil(bounds.height / contentSize.height)))
+
+        for pageIndex in 0..<pageCount {
+            pdfContext.beginPDFPage(nil)
+            pdfContext.saveGState()
+            pdfContext.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
+            pdfContext.fill(pageRect)
+            pdfContext.clip(to: CGRect(origin: .zero, size: contentSize))
+            pdfContext.translateBy(x: 0, y: -CGFloat(pageIndex) * contentSize.height)
+            layoutManager.drawGlyphs(
+                forGlyphRange: fullGlyphs,
+                at: NSPoint(x: margin, y: margin))
+            pdfContext.restoreGState()
+            pdfContext.endPDFPage()
+        }
+
+        NSGraphicsContext.current = nil
+        NSGraphicsContext.restoreGraphicsState()
+        pdfContext.closePDF()
+
+        do {
+            try data.write(to: url)
+        } catch {
+            let alert = NSAlert()
+            alert.messageText = "Export impossible"
+            alert.informativeText = error.localizedDescription
+            alert.runModal()
+        }
+    }
 }
 
 /// Ruban de fenêtre : actions de mise en forme courantes,
@@ -88,14 +172,14 @@ final class EditorToolbar: NSObject, NSToolbarDelegate {
     static let specs: [(id: NSToolbarItem.Identifier, spec: Spec?)] = [
         (.init("save"), Spec(symbol: "square.and.arrow.down", label: "Enregistrer",
                              action: Selector("saveDocument:"))),
-        (NSToolbarItem.Identifier.separator, nil),
+        (.space, nil),
         (.init("body"), Spec(symbol: "textformat", label: "Corps",
                              action: Selector("makeBody:"))),
         (.init("h1"), Spec(symbol: "textformat.size", label: "Titre 1",
                            action: Selector("makeHeading1:"))),
         (.init("h2"), Spec(symbol: "textformat.size.smaller", label: "Titre 2",
                            action: Selector("makeHeading2:"))),
-        (NSToolbarItem.Identifier.separator, nil),
+        (.space, nil),
         (.init("bold"), Spec(symbol: "bold", label: "Gras",
                              action: Selector("toggleBoldFace:"))),
         (.init("italic"), Spec(symbol: "italic", label: "Italique",
@@ -104,9 +188,9 @@ final class EditorToolbar: NSObject, NSToolbarDelegate {
                                   action: Selector("toggleUnderline:"))),
         (.init("strike"), Spec(symbol: "strikethrough", label: "Barré",
                                action: Selector("toggleStrikethrough:"))),
-        (NSToolbarItem.Identifier.separator, nil),
+        (.space, nil),
         (.init("color"), nil),
-        (NSToolbarItem.Identifier.separator, nil),
+        (.space, nil),
         (.init("alignLeft"), Spec(symbol: "text.alignleft", label: "Gauche",
                                   action: Selector("alignLeft:"))),
         (.init("alignCenter"), Spec(symbol: "text.aligncenter", label: "Centrer",
@@ -115,12 +199,12 @@ final class EditorToolbar: NSObject, NSToolbarDelegate {
                                    action: Selector("alignRight:"))),
         (.init("justify"), Spec(symbol: "text.justify", label: "Justifier",
                                 action: Selector("alignJustified:"))),
-        (NSToolbarItem.Identifier.separator, nil),
+        (.space, nil),
         (.init("bullet"), Spec(symbol: "list.bullet", label: "Liste à puces",
                                action: Selector("toggleBulletList:"))),
         (.init("numbered"), Spec(symbol: "list.number", label: "Liste numérotée",
                                  action: Selector("toggleNumberedList:"))),
-        (NSToolbarItem.Identifier.separator, nil),
+        (.space, nil),
         (.init("image"), Spec(symbol: "photo", label: "Image",
                               action: Selector("insertImage:"))),
         (.init("link"), Spec(symbol: "link", label: "Lien",
@@ -158,7 +242,7 @@ final class EditorToolbar: NSObject, NSToolbarDelegate {
 
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSUserInterfaceItemIdentifier,
                  willBeInsertedInto flag: Bool) -> NSToolbarItem? {
-        if itemIdentifier.rawValue == NSToolbarItem.Identifier.separator.rawValue { return nil }
+        if itemIdentifier.rawValue == NSToolbarItem.Identifier.space.rawValue { return nil }
         guard let entry = EditorToolbar.specs.first(where: { $0.id.rawValue == itemIdentifier.rawValue }) else {
             return nil
         }

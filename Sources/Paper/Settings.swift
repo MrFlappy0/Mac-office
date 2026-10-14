@@ -56,6 +56,25 @@ enum AppSettings {
     static func notifyChanged() {
         NotificationCenter.default.post(name: changedNotification, object: nil)
     }
+
+    // MARK: - Documents récents
+
+    static var recentDocuments: [URL] {
+        get {
+            let paths = UserDefaults.standard.stringArray(forKey: "recent.documents") ?? []
+            return paths.map { URL(fileURLWithPath: $0) }
+        }
+        set {
+            let paths = Array(newValue.prefix(8).map { $0.path })
+            UserDefaults.standard.set(paths, forKey: "recent.documents")
+        }
+    }
+
+    static func recordRecent(_ url: URL) {
+        var recents = recentDocuments.filter { $0 != url }
+        recents.insert(url, at: 0)
+        recentDocuments = recents
+    }
 }
 
 /// Fenêtre Paper → Réglages… (Cmd+,)

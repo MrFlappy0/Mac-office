@@ -8,14 +8,22 @@ final class PaperDocumentController: NSDocumentController {
     override var documentClassNames: [String] { ["PaperDocument"] }
 }
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private var settingsWindow: SettingsWindowController?
+    private let recentMenu = NSMenu(title: "Ouvrir récent")
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.activate(ignoringOtherApps: true)
         if NSApp.windows.isEmpty {
             NSDocumentController.shared.newDocument(nil)
+        }
+        let docs = NSDocumentController.shared.documents
+        NSLog("Paper: %d document(s) ouvert(s)", docs.count)
+        for document in docs {
+            if let doc = document as? PaperDocument {
+                NSLog("Paper: fenêtres de %@ = %d", doc.displayName ?? "sans titre", doc.windowControllers.count)
+            }
         }
     }
 
@@ -48,6 +56,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             """
         alert.addButton(withTitle: "Fermer")
         alert.runModal()
+    }
+
+    // MARK: - Documents récents
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let recents = AppSettings.recentDocuments.filter { FileManager.default.fileExists(atPath: $0.path) }
+        if recents.isEmpty {
+            let empty = NSMenuItem(title: "Aucun document récent", action: nil, keyEquivalent: "")
+            empty.isEnabled = false
+            menu.addItem(empty)
+            return
+        }
+        for url in recents {
+            let menuItem = NSMenuItem(title: url.lastPathComponent,
+                                       action: #selector(openRecent(_:)), keyEquivalent: "")
+            menuItem.representedObject = url.path
+            menu.addItem(menuItem)
+        }
+    }
+
+    @objc private func openRecent(_ sender: NSMenuItem) {
+        guard let path = sender.representedObject as? String else { return }
+        NSDocumentController.shared.openDocument(
+            withContentsOf: URL(fileURLWithPath: path), display: true) { _, _, _ in }
     }
 
     // MARK: - Barre de menus
@@ -85,10 +118,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let fileMenu = NSMenu(title: "Fichier")
         fileMenu.addItem(item("Nouveau", action: Selector("newDocument:"), key: "n"))
         fileMenu.addItem(item("Ouvrir…", action: Selector("openDocument:"), key: "o"))
+        let recentItem = NSMenuItem(title: "Ouvrir récent", action: nil, keyEquivalent: "")
+        recentMenu.delegate = self
+        recentItem.submenu = recentMenu
+        fileMenu.addItem(recentItem)
         fileMenu.addItem(.separator())
         fileMenu.addItem(item("Enregistrer", action: Selector("saveDocument:"), key: "s"))
         fileMenu.addItem(item("Enregistrer sous…", action: Selector("saveDocumentAs:"), key: "s", shift: true))
         fileMenu.addItem(.separator())
+        fileMenu.addItem(item("Exporter en PDF…", action: Selector("exportPDF:"), key: "e"))
+        fileMenu.addItem(.separator())
+        fileMenu.addItem(item("Format d'impression…", action: Selector("runPageLayout:")))
         fileMenu.addItem(item("Imprimer…", action: Selector("printDocument:"), key: "p"))
         fileItem.submenu = fileMenu
         mainMenu.addItem(fileItem)
@@ -106,9 +146,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                               key: "v", shift: true, alt: true))
         editMenu.addItem(item("Tout sélectionner", action: Selector("selectAll:"), key: "a"))
         editMenu.addItem(.separator())
-        editMenu.addItem(item("Rechercher…", action: Selector("performTextFinderAction:"),
-                              key: "f", alt: true))
+        editMenu.addItem(item("Rechercher…", action: Selector("performTextFinderAction:"), key: "f"))
         editMenu.items.last?.tag = NSTextFinder.Action.showFindInterface.rawValue
+        editMenu.addItem(item("Remplacer…", action: Selector("performTextFinderAction:"),
+                              key: "f", alt: true))
+        editMenu.items.last?.tag = NSTextFinder.Action.showReplaceInterface.rawValue
         editMenu.addItem(item("Suivant", action: Selector("performTextFinderAction:"), key: "g"))
         editMenu.items.last?.tag = NSTextFinder.Action.nextMatch.rawValue
         editMenu.addItem(item("Précédent", action: Selector("performTextFinderAction:"), key: "g", shift: true))
@@ -178,6 +220,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let viewItem = NSMenuItem()
         let viewMenu = NSMenu(title: "Affichage")
         viewMenu.addItem(item("Plan du document", action: Selector("toggleOutline:")))
+        viewMenu.addItem(.separator())
+        viewMenu.addItem(item("Zoom avant", action: Selector("zoomIn:"), key: "+"))
+        viewMenu.addItem(item("Zoom arrière", action: Selector("zoomOut:"), key: "-"))
+        viewMenu.addItem(item("Taille normale", action: Selector("zoomReset:"), key: "0"))
         viewItem.submenu = viewMenu
         mainMenu.addItem(viewItem)
 

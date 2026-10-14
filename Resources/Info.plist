@@ -11,6 +11,8 @@
 			<string>Document Word Office Open XML</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>PaperDocument</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>org.openxmlformats.wordprocessingml.document</string>

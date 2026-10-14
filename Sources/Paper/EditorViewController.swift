@@ -36,6 +36,9 @@ final class EditorViewController: NSViewController, NSTextViewDelegate {
         scrollView.hasHorizontalScroller = false
         scrollView.autohidesScrollers = true
         scrollView.autoresizingMask = [.width, .height]
+        scrollView.allowsMagnification = true
+        scrollView.minMagnification = 0.5
+        scrollView.maxMagnification = 3
 
         // Plan
         sidebar.jump = { [weak self] range in
@@ -87,6 +90,16 @@ final class EditorViewController: NSViewController, NSTextViewDelegate {
     func setOutlineVisible(_ visible: Bool) {
         outlineVisible = visible
         layoutViews()
+    }
+
+    // MARK: - Zoom
+
+    func zoom(by delta: CGFloat) {
+        zoom(to: scrollView.magnification + delta)
+    }
+
+    func zoom(to value: CGFloat) {
+        scrollView.magnification = min(3, max(0.5, value))
     }
 
     // MARK: - Contenu
