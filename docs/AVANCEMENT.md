@@ -29,4 +29,19 @@ Fait :
 - Temps de lecture estimé dans la barre d'état
 - Titres colorés, citations sur fond, styles de page retravaillés
 
-Prochaine étape : v0.3 — en-têtes et pieds de page, numérotation des pages à l'impression.
+Prochaine étape : v0.3 — interface à la Apple, interligne, page de garde, en-têtes de tableau, collage sans mise en forme.
+
+## v0.3 — 14 octobre 2026 — Interface à la Apple
+
+Fait :
+- Refonte visuelle façon Pages : barre d'outils sobre sur fond gris Apple (#f6f6f8), contrôles segmentés pour l'alignement et les listes, accent bleu système, boutons arrondis, typographie SF
+- Suppression de la barre de titre bleue : le nom du document s'affiche dans la barre de titre native macOS (avec marqueur de modification)
+- Recherche en carte flottante arrondie avec ombre, champs à focus bleu
+- Barre d'état épurée style Apple : compteurs centrés en gris, messages de confirmation (enregistrement, remplacements, mode collage)
+- Interligne réglable : compact, normal, large, très large
+- Page de garde : titre, sous-titre et date centrés (menu Format)
+- En-têtes de tableau : bascule première ligne td/th avec fond et gras
+- Collage sans mise en forme (Cmd+Alt+Maj+V) : le prochain collage insère le texte seul
+- Panneau Plan retouché (survol bleu, gras pour Titre 1)
+
+Prochaine étape : v0.4 — préférences (police par défaut, marges) et thème sombre.

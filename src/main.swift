@@ -281,7 +281,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
     @objc func doAbout() {
         let a = NSAlert()
         a.messageText = "Paper 1.0"
-        a.informativeText = "Traitement de texte pour macOS : mise en forme, styles, plan de navigation du document, tableaux éditables, images, liens, recherche/remplacement, sauvegarde automatique, export Word (.doc), HTML, PDF et texte brut."
+        a.informativeText = "Traitement de texte pour macOS, interface façon Apple : mise en forme, styles, plan de navigation, tableaux éditables avec en-têtes, page de garde, interligne, images, liens, recherche/remplacement, sauvegarde automatique, export Word (.doc), HTML, PDF et texte brut."
         a.runModal()
     }
     @objc func doNew() { webView.evaluateJavaScript("newDoc()", completionHandler: nil) }
@@ -304,6 +304,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
     @objc func doZoomReset() { webView.evaluateJavaScript("zoomReset()", completionHandler: nil) }
     @objc func doSymbols() { webView.evaluateJavaScript("openDialog('symbols')", completionHandler: nil) }
     @objc func doShortcuts() { webView.evaluateJavaScript("openDialog('shortcuts')", completionHandler: nil) }
+    @objc func doCover() { webView.evaluateJavaScript("insertCover()", completionHandler: nil) }
+    @objc func doPastePlain() { webView.evaluateJavaScript("pastePlain()", completionHandler: nil) }
 
     // MARK: - Barre de menus
 
@@ -354,6 +356,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         editMenu.addItem(std("Couper", action: Selector("cut:"), key: "x"))
         editMenu.addItem(std("Copier", action: Selector("copy:"), key: "c"))
         editMenu.addItem(std("Coller", action: Selector("paste:"), key: "v"))
+        let plainPasteItem = item("Coller sans mise en forme", action: #selector(doPastePlain), key: "v")
+        plainPasteItem.keyEquivalentModifierMask = [.command, .option, .shift]
+        editMenu.addItem(plainPasteItem)
         editMenu.addItem(std("Tout sélectionner", action: Selector("selectAll:"), key: "a"))
         editMenu.addItem(.separator())
         editMenu.addItem(item("Rechercher…", action: #selector(doFind), key: "f"))
@@ -368,6 +373,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         fmtMenu.addItem(item("Barré", action: #selector(doStrike)))
         fmtMenu.addItem(.separator())
         fmtMenu.addItem(item("Caractères spéciaux…", action: #selector(doSymbols)))
+        fmtMenu.addItem(item("Page de garde…", action: #selector(doCover)))
         fmtItem.submenu = fmtMenu
         mainMenu.addItem(fmtItem)
 

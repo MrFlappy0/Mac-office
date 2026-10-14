@@ -6,97 +6,103 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
-body { font-family: -apple-system, "Helvetica Neue", sans-serif; background: #e8e9ed; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; }
+body { font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; background: #f5f5f7; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; color: #1d1d1f; }
 
-/* ---- Barre de titre ---- */
-#titlebar { background: linear-gradient(180deg, #3468b8, #2b579a); color: #fff; min-height: 44px; display: flex; align-items: center; gap: 6px; padding: 6px 12px; flex-wrap: wrap; }
-#appname { font-weight: 700; font-size: 15px; letter-spacing: .4px; margin-right: 14px; display: flex; align-items: center; gap: 7px; }
-#appname .dot { width: 9px; height: 9px; border-radius: 50%; background: #ffd54a; display: inline-block; }
-.tbtn { color: #fff; background: rgba(255,255,255,.13); border: none; border-radius: 6px; height: 28px; padding: 0 11px; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-.tbtn:hover { background: rgba(255,255,255,.28); }
-.tbtn svg { display: block; }
-.tbtn.on { background: rgba(255,255,255,.4); }
-.spacer { flex: 1; }
+/* ---- Barre d'outils ---- */
+#toolbar { background: #f6f6f8; border-bottom: 1px solid #e3e3e8; padding: 7px 12px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+#toolbar .group { display: flex; gap: 3px; align-items: center; padding-right: 10px; margin-right: 6px; border-right: 1px solid #e3e3e8; }
+#toolbar .group:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+#toolbar button { min-width: 28px; height: 27px; padding: 0 7px; background: #fff; border: 1px solid #d2d2d8; border-radius: 6px; font-size: 12.5px; color: #333; cursor: pointer; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+#toolbar button:hover { background: #eef0f4; border-color: #b8b8c0; }
+#toolbar button.active { background: rgba(10,102,194,.13); border-color: rgba(10,102,194,.45); color: #0a4bbd; }
+#toolbar button.tbtn-blue { color: #0a66c2; }
+#toolbar select { height: 27px; border: 1px solid #d2d2d8; border-radius: 6px; background: #fff; font-size: 12.5px; padding: 0 4px; max-width: 132px; color: #333; }
+#toolbar select:hover { border-color: #b8b8c0; }
+#toolbar button svg { display: block; }
 
-/* ---- Ruban de mise en forme ---- */
-#toolbar { background: #fbfbfd; border-bottom: 1px solid #d5d5dd; padding: 6px 10px; display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
-#toolbar .group { display: flex; gap: 2px; align-items: center; padding-right: 8px; margin-right: 4px; border-right: 1px solid #e2e2e8; }
-#toolbar .group:last-child { border-right: none; }
-#toolbar button { min-width: 28px; height: 26px; padding: 0 7px; background: #fff; border: 1px solid #cfcfd8; border-radius: 6px; font-size: 12px; color: #333; cursor: pointer; line-height: 1; }
-#toolbar button:hover { background: #ecedf3; border-color: #b9b9c6; }
-#toolbar button.active { background: #d6e4ff; border-color: #7a9fdd; color: #1a3f77; }
-#toolbar select { height: 26px; border: 1px solid #cfcfd8; border-radius: 6px; background: #fff; font-size: 12px; padding: 0 4px; max-width: 140px; color: #333; }
-#toolbar button svg { display: block; margin: 0 auto; }
+.seg { display: flex; background: #fff; border: 1px solid #d2d2d8; border-radius: 7px; overflow: hidden; }
+.seg button { border: none; border-radius: 0; border-right: 1px solid #d2d2d8; }
+.seg button:last-child { border-right: none; }
+.seg button:hover { background: #eef0f4; }
+.seg button.active { background: rgba(10,102,194,.13); color: #0a4bbd; }
 
-label.color-well { position: relative; overflow: hidden; width: 28px; height: 26px; background: #fff; border: 1px solid #cfcfd8; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-label.color-well:hover { background: #ecedf3; }
+label.color-well { position: relative; overflow: hidden; width: 29px; height: 27px; background: #fff; border: 1px solid #d2d2d8; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+label.color-well:hover { background: #eef0f4; }
 label.color-well input { position: absolute; left: -30px; top: -30px; }
-.swatch { width: 14px; height: 14px; border: 1px solid #999; border-radius: 4px; }
+.swatch { width: 15px; height: 15px; border: 1px solid #999; border-radius: 4px; }
 
 /* ---- Barre contextuelle tableaux ---- */
-#tablebar { display: none; gap: 4px; padding: 5px 10px; background: #eef3fc; border-bottom: 1px solid #cdd8ec; align-items: center; }
+#tablebar { display: none; gap: 5px; padding: 6px 12px; background: #eef2f8; border-bottom: 1px solid #d5ddec; align-items: center; flex-wrap: wrap; }
 #tablebar.visible { display: flex; }
-#tablebar span.lbl { font-size: 11.5px; color: #2b579a; font-weight: 600; margin-right: 6px; }
-#tablebar button { height: 24px; padding: 0 9px; font-size: 12px; border: 1px solid #b9c6e0; border-radius: 5px; background: #fff; color: #2b579a; cursor: pointer; }
+#tablebar span.lbl { font-size: 11.5px; color: #0a66c2; font-weight: 700; margin-right: 6px; text-transform: uppercase; letter-spacing: .4px; }
+#tablebar button { height: 24px; padding: 0 9px; font-size: 12px; border: 1px solid #b9c6e0; border-radius: 6px; background: #fff; color: #24466e; cursor: pointer; }
 #tablebar button:hover { background: #dce6f8; }
-#tablebar button.danger { color: #a33; border-color: #ddb9b9; }
+#tablebar button.danger { color: #c23b3b; border-color: #ddb9b9; }
 #tablebar button.danger:hover { background: #f7dede; }
 
-/* ---- Recherche ---- */
-#findbar { display: none; gap: 6px; padding: 6px 10px; background: #fff8d6; border-bottom: 1px solid #e3d9a8; align-items: center; }
+/* ---- Recherche (carte flottante) ---- */
+#findbar { display: none; position: absolute; top: 12px; right: 14px; z-index: 40; gap: 6px; padding: 9px 11px; background: rgba(255,255,255,.97); border: 1px solid #d8d8de; border-radius: 11px; box-shadow: 0 6px 24px rgba(0,0,0,.14); align-items: center; }
 #findbar.visible { display: flex; }
-#findbar input { height: 24px; border: 1px solid #c8c8ce; border-radius: 6px; padding: 0 6px; width: 170px; font-size: 12px; }
-#findbar button { height: 24px; padding: 0 9px; font-size: 12px; border: 1px solid #c8c8ce; border-radius: 6px; background: #fff; cursor: pointer; }
+#findbar input { height: 25px; border: 1px solid #d2d2d8; border-radius: 6px; padding: 0 7px; width: 160px; font-size: 12.5px; outline: none; }
+#findbar input:focus { border-color: #0a66c2; box-shadow: 0 0 0 3px rgba(10,102,194,.15); }
+#findbar button { height: 25px; padding: 0 9px; font-size: 12px; border: 1px solid #d2d2d8; border-radius: 6px; background: #fff; color: #333; cursor: pointer; }
+#findbar button:hover { background: #eef0f4; }
+#findbar button.primary { background: #0a66c2; border-color: #0a66c2; color: #fff; }
+#findbar button.primary:hover { background: #0b74dd; }
 
 /* ---- Zone principale ---- */
-#mainrow { flex: 1; display: flex; min-height: 0; }
-#sidebar { width: 232px; background: #f5f5f8; border-right: 1px solid #dcdce2; overflow-y: auto; padding: 10px 0 16px; }
+#mainrow { flex: 1; display: flex; min-height: 0; position: relative; }
+#sidebar { width: 232px; background: #fafafc; border-right: 1px solid #e6e6ec; overflow-y: auto; padding: 12px 0 16px; }
 body.no-outline #sidebar { display: none; }
-.sb-title { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: #888; padding: 4px 14px 8px; font-weight: 700; }
-.ol-item { padding: 5px 14px; font-size: 12.5px; color: #333; cursor: pointer; border-left: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ol-item:hover { background: #e9e9f0; border-left-color: #2b579a; }
+.sb-title { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #86868b; padding: 2px 16px 8px; font-weight: 700; }
+.ol-item { padding: 6px 16px; font-size: 12.5px; color: #1d1d1f; cursor: pointer; border-left: 2.5px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ol-item:hover { background: #e8e8ee; border-left-color: #0a66c2; }
 .ol-h1 { font-weight: 600; }
-.ol-h2 { padding-left: 26px; }
-.ol-h3 { padding-left: 38px; color: #666; }
-.ol-empty { padding: 8px 14px; font-size: 12px; color: #999; line-height: 1.4; }
+.ol-h2 { padding-left: 28px; color: #444; }
+.ol-h3 { padding-left: 40px; color: #666; }
+.ol-empty { padding: 8px 16px; font-size: 12px; color: #a1a1a6; line-height: 1.45; }
 
-#scroll { flex: 1; overflow: auto; padding: 26px 0 40px; }
-#page { background: #fff; width: 794px; min-height: 1000px; margin: 0 auto; padding: 94px 94px; box-shadow: 0 3px 18px rgba(0,0,0,.25); outline: none; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; color: #111; }
+#scroll { flex: 1; overflow: auto; padding: 26px 0 44px; }
+#page { background: #fff; width: 794px; min-height: 1000px; margin: 0 auto; padding: 94px 94px; box-shadow: 0 1px 4px rgba(0,0,0,.16), 0 8px 28px rgba(0,0,0,.06); outline: none; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; color: #111; }
 #page p { margin: 0 0 10px; }
-#page h1 { font-size: 28pt; margin: 14pt 0 8pt; line-height: 1.2; color: #1a3f6e; }
-#page h2 { font-size: 20pt; margin: 12pt 0 7pt; line-height: 1.2; color: #2b579a; }
+#page h1 { font-size: 28pt; margin: 14pt 0 8pt; line-height: 1.2; color: #1d1d1f; }
+#page h2 { font-size: 20pt; margin: 12pt 0 7pt; line-height: 1.2; color: #1d1d1f; }
 #page h3 { font-size: 15pt; margin: 10pt 0 6pt; line-height: 1.2; }
-#page blockquote { border-left: 3px solid #2b579a; background: #f4f6fa; padding: 8px 12px; color: #444; margin: 8px 0; }
-#page pre { font-family: Menlo, monospace; background: #f4f4f6; padding: 8px; border-radius: 5px; margin: 8px 0; white-space: pre-wrap; }
+#page blockquote { border-left: 3px solid #0a66c2; background: #f5f7fa; padding: 8px 12px; color: #444; margin: 8px 0; border-radius: 0 5px 5px 0; }
+#page pre { font-family: Menlo, monospace; background: #f4f4f6; padding: 8px; border-radius: 6px; margin: 8px 0; white-space: pre-wrap; }
 #page ul, #page ol { padding-left: 26px; margin: 0 0 10px; }
 #page table { border-collapse: collapse; margin: 10px 0; width: 100%; }
-#page td, #page th { border: 1px solid #666; padding: 5px 8px; min-width: 40px; }
+#page td, #page th { border: 1px solid #999; padding: 5px 8px; min-width: 40px; }
+#page th { background: #eef0f4; font-weight: 700; }
 #page img { max-width: 100%; }
-#page hr { border: none; border-top: 1px solid #999; margin: 14px 0; }
-#page a { color: #0b57d0; }
+#page hr { border: none; border-top: 1px solid #aaa; margin: 14px 0; }
+#page a { color: #0a66c2; }
 
 /* ---- Barre d'état ---- */
-#statusbar { background: #fbfbfd; border-top: 1px solid #d5d5dd; padding: 4px 12px; font-size: 11.5px; color: #555; display: flex; gap: 16px; align-items: center; }
-#statusbar select { height: 20px; font-size: 11.5px; border: 1px solid #cfcfd8; border-radius: 4px; background: #fff; }
-#statusbar .info { color: #888; }
+#statusbar { background: #f6f6f8; border-top: 1px solid #e3e3e8; padding: 5px 14px; font-size: 11.5px; color: #86868b; display: flex; gap: 14px; align-items: center; }
+#statusbar #hint { color: #0a66c2; font-weight: 500; min-width: 1px; }
+#statusbar .spacer { flex: 1; }
+#statusbar .counts { display: flex; gap: 14px; }
+#statusbar select { height: 20px; font-size: 11.5px; border: 1px solid #d2d2d8; border-radius: 5px; background: #fff; color: #555; }
 
 /* ---- Dialogs ---- */
-#overlay { position: fixed; inset: 0; background: rgba(20,25,40,.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+#overlay { position: fixed; inset: 0; background: rgba(30,34,45,.4); display: flex; align-items: center; justify-content: center; z-index: 60; }
 #overlay.hidden { display: none; }
-#dialog { background: #fff; border-radius: 12px; padding: 18px 20px; width: 480px; max-width: 90vw; max-height: 70vh; overflow: auto; box-shadow: 0 12px 40px rgba(0,0,0,.35); }
-#dialog h3 { font-size: 15px; margin-bottom: 12px; color: #222; }
+#dialog { background: #fff; border-radius: 12px; padding: 20px 22px; width: 470px; max-width: 90vw; max-height: 70vh; overflow: auto; box-shadow: 0 16px 48px rgba(0,0,0,.3); }
+#dialog h3 { font-size: 15px; margin-bottom: 14px; color: #1d1d1f; }
 .sym-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
-.sym { height: 34px; font-size: 16px; border: 1px solid #d5d5dd; border-radius: 6px; background: #fff; cursor: pointer; }
-.sym:hover { background: #e8f0fe; border-color: #7a9fdd; }
+.sym { height: 34px; font-size: 16px; border: 1px solid #dcdce2; border-radius: 7px; background: #fff; cursor: pointer; }
+.sym:hover { background: #e8f0fe; border-color: #7aa5e8; }
 .keys { border-collapse: collapse; width: 100%; }
-.keys td { padding: 4px 10px 4px 0; font-size: 12.5px; color: #333; }
-.keys td:first-child { font-weight: 600; color: #2b579a; white-space: nowrap; width: 130px; }
-.dlg-close { margin-top: 14px; height: 28px; padding: 0 16px; font-size: 12.5px; border: 1px solid #cfcfd8; border-radius: 6px; background: #f4f5f9; cursor: pointer; }
+.keys td { padding: 5px 10px 5px 0; font-size: 12.5px; color: #333; }
+.keys td:first-child { font-weight: 600; color: #0a66c2; white-space: nowrap; width: 150px; }
+.keys tr { border-bottom: 1px solid #f0f0f4; }
+.dlg-close { margin-top: 16px; height: 29px; padding: 0 18px; font-size: 12.5px; border: 1px solid #d2d2d8; border-radius: 7px; background: #f4f5f9; color: #333; cursor: pointer; }
 .dlg-close:hover { background: #e8e9ef; }
 
 /* ---- Mode export PDF ---- */
 body.pdf-mode { background: #fff; }
-body.pdf-mode #titlebar, body.pdf-mode #toolbar, body.pdf-mode #tablebar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
+body.pdf-mode #toolbar, body.pdf-mode #tablebar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
 body.pdf-mode #mainrow { display: block; overflow: visible; }
 body.pdf-mode #sidebar { display: none; }
 body.pdf-mode #scroll { overflow: visible; padding: 0; }
@@ -105,25 +111,15 @@ body.pdf-mode #page { box-shadow: none; }
 </head>
 <body>
 
-<div id="titlebar">
-  <span id="appname"><span class="dot"></span>Paper</span>
-  <button class="tbtn" title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
-  <button class="tbtn" title="Ouvrir (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
-  <button class="tbtn" title="Enregistrer en HTML (Cmd+S)" onclick="requestSave('html')">Enregistrer</button>
-  <button class="tbtn" title="Enregistrer au format Word (.doc) (Cmd+Maj+S)" onclick="requestSave('doc')">Word</button>
-  <button class="tbtn" title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
-  <button class="tbtn" title="Imprimer (Cmd+P)" onclick="native({type:'print'})">Imprimer</button>
-  <span class="spacer"></span>
-  <button class="tbtn" title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
-  <button class="tbtn" title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
-  <button class="tbtn" title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
-  <button class="tbtn" id="outlineBtn" title="Afficher ou masquer le plan du document" onclick="toggleOutline()">Plan</button>
-</div>
-
 <div id="toolbar">
   <div class="group">
+    <button id="outlineBtn" title="Afficher ou masquer le plan du document" onclick="toggleOutline()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><line x1="9.5" y1="4" x2="9.5" y2="20"/></svg></button>
+    <button title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
+    <button title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+  </div>
+  <div class="group">
     <select id="blockSel" title="Style de paragraphe" onchange="restoreSelection(); applyBlock(this.value)">
-      <option value="p">Paragraphe</option>
+      <option value="p">Corps de texte</option>
       <option value="h1">Titre 1</option>
       <option value="h2">Titre 2</option>
       <option value="h3">Titre 3</option>
@@ -154,6 +150,12 @@ body.pdf-mode #page { box-shadow: none; }
       <option value="48">48 pt</option>
       <option value="72">72 pt</option>
     </select>
+    <select id="lineSel" title="Interligne" onchange="setLineHeight(this.value)">
+      <option value="1.15">Interligne : compact</option>
+      <option value="1.45" selected>Interligne : normal</option>
+      <option value="1.8">Interligne : large</option>
+      <option value="2.2">Interligne : très large</option>
+    </select>
   </div>
   <div class="group">
     <button id="btnBold" data-cmd="bold" title="Gras (Cmd+B)" onclick="cmd('bold')"><b>G</b></button>
@@ -174,26 +176,39 @@ body.pdf-mode #page { box-shadow: none; }
     </label>
   </div>
   <div class="group">
-    <button data-cmd="justifyLeft" title="Aligner à gauche" onclick="cmd('justifyLeft')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
-    <button data-cmd="justifyCenter" title="Centrer" onclick="cmd('justifyCenter')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
-    <button data-cmd="justifyRight" title="Aligner à droite" onclick="cmd('justifyRight')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg></button>
-    <button data-cmd="justifyFull" title="Justifier" onclick="cmd('justifyFull')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
-  </div>
-  <div class="group">
-    <button data-cmd="insertUnorderedList" title="Liste à puces" onclick="cmd('insertUnorderedList')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
-    <button data-cmd="insertOrderedList" title="Liste numérotée" onclick="cmd('insertOrderedList')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
-    <button title="Diminuer le retrait" onclick="cmd('outdent')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 3 12 9 6"/><line x1="3" y1="12" x2="13" y2="12"/><line x1="17" y1="6" x2="21" y2="6"/><line x1="17" y1="12" x2="21" y2="12"/><line x1="17" y1="18" x2="21" y2="18"/></svg></button>
-    <button title="Augmenter le retrait" onclick="cmd('indent')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 21 12 15 6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="7" y2="6"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="3" y1="18" x2="7" y2="18"/></svg></button>
+    <div class="seg" title="Alignement">
+      <button data-cmd="justifyLeft" title="Aligner à gauche" onclick="cmd('justifyLeft')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
+      <button data-cmd="justifyCenter" title="Centrer" onclick="cmd('justifyCenter')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
+      <button data-cmd="justifyRight" title="Aligner à droite" onclick="cmd('justifyRight')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg></button>
+      <button data-cmd="justifyFull" title="Justifier" onclick="cmd('justifyFull')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+    </div>
+    <div class="seg" title="Listes">
+      <button data-cmd="insertUnorderedList" title="Liste à puces" onclick="cmd('insertUnorderedList')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+      <button data-cmd="insertOrderedList" title="Liste numérotée" onclick="cmd('insertOrderedList')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+    </div>
+    <button title="Diminuer le retrait" onclick="cmd('outdent')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 3 12 9 6"/><line x1="3" y1="12" x2="13" y2="12"/><line x1="17" y1="6" x2="21" y2="6"/><line x1="17" y1="12" x2="21" y2="12"/><line x1="17" y1="18" x2="21" y2="18"/></svg></button>
+    <button title="Augmenter le retrait" onclick="cmd('indent')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 21 12 15 6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="7" y2="6"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="3" y1="18" x2="7" y2="18"/></svg></button>
   </div>
   <div class="group">
     <button title="Insérer un lien" onclick="insertLink()">Lien</button>
-    <button title="Supprimer le lien" onclick="cmd('unlink')">Délier</button>
     <button title="Insérer une image" onclick="native({type:'image'})">Image</button>
     <button title="Insérer un tableau" onclick="insertTable()">Tableau</button>
-    <button title="Ligne horizontale" onclick="cmd('insertHorizontalRule')">Ligne</button>
-    <button title="Insérer la date du jour" onclick="insertDate()">Date</button>
     <button title="Caractères spéciaux" onclick="openDialog('symbols')">Symboles</button>
+    <button title="Insérer la date du jour" onclick="insertDate()">Date</button>
+    <button title="Page de garde" onclick="insertCover()">Page de garde</button>
+    <button title="Ligne horizontale" onclick="cmd('insertHorizontalRule')">Ligne</button>
+  </div>
+  <div class="group">
     <button title="Effacer la mise en forme" onclick="cmd('removeFormat')">Effacer</button>
+    <button title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
+  </div>
+  <div class="group">
+    <button title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
+    <button title="Ouvrir (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
+    <button class="tbtn-blue" title="Enregistrer en HTML (Cmd+S)" onclick="requestSave('html')">Enregistrer</button>
+    <button class="tbtn-blue" title="Enregistrer au format Word (.doc) (Cmd+Maj+S)" onclick="requestSave('doc')">Word</button>
+    <button class="tbtn-blue" title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
+    <button title="Imprimer (Cmd+P)" onclick="native({type:'print'})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 3 18 3 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg></button>
   </div>
 </div>
 
@@ -203,6 +218,7 @@ body.pdf-mode #page { box-shadow: none; }
   <button onclick="tableAddRow(false)">Ligne en dessous</button>
   <button onclick="tableAddCol(true)">Colonne avant</button>
   <button onclick="tableAddCol(false)">Colonne après</button>
+  <button onclick="tableToggleHeader()">En-tête</button>
   <button class="danger" onclick="tableDelRow()">Suppr. ligne</button>
   <button class="danger" onclick="tableDelCol()">Suppr. colonne</button>
   <button class="danger" onclick="tableDelTable()">Suppr. tableau</button>
@@ -213,8 +229,8 @@ body.pdf-mode #page { box-shadow: none; }
   <input id="replaceInput" placeholder="Remplacer par" onkeydown="handleFindKey(event)">
   <button onclick="findNext()">Suivant</button>
   <button onclick="replaceOne()">Remplacer</button>
-  <button onclick="replaceAll()">Tout remplacer</button>
-  <button onclick="toggleFind(false)">Fermer</button>
+  <button onclick="replaceAll()">Tout</button>
+  <button class="primary" onclick="toggleFind(false)">Fermer</button>
 </div>
 
 <div id="mainrow">
@@ -228,13 +244,16 @@ body.pdf-mode #page { box-shadow: none; }
 </div>
 
 <div id="statusbar">
-  <span id="countWords">0 mot</span>
-  <span id="countChars">0 caractère</span>
-  <span id="readTime"></span>
-  <span style="flex:1"></span>
-  <span class="info">A4 · Marges 2,5 cm</span>
-  <span>Zoom</span>
-  <select id="zoomSel" onchange="setZoom(this.value)">
+  <span id="hint"></span>
+  <span class="spacer"></span>
+  <span class="counts">
+    <span id="countWords">0 mot</span>
+    <span id="countChars">0 caractère</span>
+    <span id="readTime"></span>
+  </span>
+  <span class="spacer"></span>
+  <span>A4 · 2,5 cm</span>
+  <select id="zoomSel" onchange="setZoom(this.value)" title="Zoom">
     <option value="0.75">75 %</option>
     <option value="1" selected>100 %</option>
     <option value="1.25">125 %</option>
@@ -252,6 +271,7 @@ var savedRange = null;
 var dirty = false;
 var savedZoom = '1';
 var ZOOMS = [0.75, 1, 1.25, 1.5, 2];
+var plainPaste = false;
 
 function native(obj) {
   if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.app) {
@@ -281,7 +301,7 @@ document.addEventListener('selectionchange', function () {
   syncTableBar();
 });
 
-document.querySelectorAll('#toolbar button, #tablebar button').forEach(function (b) {
+document.querySelectorAll('#toolbar button, #tablebar button, .seg button').forEach(function (b) {
   b.addEventListener('mousedown', function (e) { e.preventDefault(); });
 });
 
@@ -316,7 +336,16 @@ function refreshCounts() {
   var words = t ? t.split(/\s+/).length : 0;
   document.getElementById('countWords').textContent = words + (words > 1 ? ' mots' : ' mot');
   document.getElementById('countChars').textContent = t.length + (t.length > 1 ? ' caractères' : ' caractère');
-  document.getElementById('readTime').textContent = words > 150 ? 'environ ' + Math.ceil(words / 200) + ' min de lecture' : '';
+  document.getElementById('readTime').textContent = words > 150 ? '· environ ' + Math.ceil(words / 200) + ' min de lecture' : '';
+}
+
+/* ---- Barre d'état : messages ---- */
+
+function hint(msg) {
+  var el = document.getElementById('hint');
+  el.textContent = msg;
+  if (hint.timer) clearTimeout(hint.timer);
+  hint.timer = setTimeout(function () { el.textContent = ''; }, 8000);
 }
 
 /* ---- État modifié ---- */
@@ -335,6 +364,7 @@ page.addEventListener('input', function () {
 function afterSave() {
   dirty = false;
   try { localStorage.removeItem('paper.autosave'); } catch (e) {}
+  hint('Document enregistré.');
 }
 
 function newDoc() {
@@ -384,6 +414,24 @@ try {
     }
   }
 } catch (e) {}
+
+/* ---- Collage sans mise en forme ---- */
+
+document.addEventListener('paste', function (e) {
+  if (!plainPaste) return;
+  e.preventDefault();
+  var text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+  plainPaste = false;
+  hint('Collage sans mise en forme effectué.');
+  refresh();
+});
+
+function pastePlain() {
+  plainPaste = true;
+  page.focus();
+  hint('Mode texte seul actif : collez avec Cmd+V.');
+}
 
 /* ---- Insertions ---- */
 
@@ -448,6 +496,23 @@ function insertSymbol(ch) {
   refresh();
 }
 
+function insertCover() {
+  restoreSelection();
+  var title = window.prompt('Titre du document :', '');
+  if (title === null) return;
+  var sub = window.prompt('Sous-titre (laisser vide pour ignorer) :', '');
+  if (sub === null) sub = '';
+  var dateStr = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  var html = '<div style="text-align:center; padding:190px 0 250px;">'
+    + '<p style="font-size:36pt; font-weight:700; margin:0 0 20px;">' + (escapeHtml(title) || 'Titre du document') + '</p>';
+  if (sub) html += '<p style="font-size:16pt; color:#555; margin:0 0 28px;">' + escapeHtml(sub) + '</p>';
+  html += '<p style="font-size:12pt; color:#86868b; margin:0;">' + dateStr + '</p>';
+  html += '</div><p><br></p>';
+  document.execCommand('insertHTML', false, html);
+  setDirty(true);
+  refresh();
+}
+
 /* ---- Édition de tableaux ---- */
 
 function caretCell() {
@@ -488,6 +553,21 @@ function tableAddCol(before) {
   var target = cell ? (before ? cell.cellIndex : cell.cellIndex + 1) : t.rows[0].cells.length;
   for (var i = 0; i < t.rows.length; i++) {
     t.rows[i].insertCell(target).innerHTML = '&nbsp;';
+  }
+  setDirty(true);
+  refresh();
+}
+
+function tableToggleHeader() {
+  var t = caretTable();
+  if (!t || !t.rows.length) return;
+  var first = t.rows[0];
+  var toTh = first.cells[0] && first.cells[0].tagName === 'TD';
+  for (var i = 0; i < first.cells.length; i++) {
+    var cell = first.cells[i];
+    var newCell = document.createElement(toTh ? 'th' : 'td');
+    newCell.innerHTML = cell.innerHTML;
+    cell.parentNode.replaceChild(newCell, cell);
   }
   setDirty(true);
   refresh();
@@ -536,7 +616,7 @@ function buildOutline() {
     var txt = h.textContent.trim() || '(sans titre)';
     html += '<div class="ol-item ol-' + h.tagName.toLowerCase() + '" data-idx="' + i + '" title="' + escapeAttr(txt) + '">' + escapeHtml(txt) + '</div>';
   }
-  out.innerHTML = html || '<div class="ol-empty">Aucun titre pour le moment. Utilisez les styles Titre 1 à 3 pour structurer votre document, ils apparaîtront ici.</div>';
+  out.innerHTML = html || '<div class="ol-empty">Aucun titre pour le moment. Utilisez les styles Titre 1 à 3 pour structurer votre document : ils apparaîtront ici.</div>';
   out.querySelectorAll('.ol-item').forEach(function (el) {
     el.onclick = function () {
       var h = page.querySelectorAll('h1, h2, h3')[parseInt(el.getAttribute('data-idx'), 10)];
@@ -547,7 +627,7 @@ function buildOutline() {
 
 function toggleOutline() {
   document.body.classList.toggle('no-outline');
-  document.getElementById('outlineBtn').classList.toggle('on', !document.body.classList.contains('no-outline'));
+  document.getElementById('outlineBtn').classList.toggle('active', !document.body.classList.contains('no-outline'));
   buildOutline();
 }
 
@@ -555,6 +635,11 @@ function toggleOutline() {
 
 function applyBlock(v) {
   cmd('formatBlock', '<' + v + '>');
+}
+
+function setLineHeight(v) {
+  page.style.lineHeight = v;
+  setDirty(true);
 }
 
 function setFontSize(size) {
@@ -650,7 +735,10 @@ function replaceAll() {
     document.execCommand('insertText', false, rep);
     n++;
   }
-  if (n > 0) setDirty(true);
+  if (n > 0) {
+    setDirty(true);
+    hint(n + ' remplacement' + (n > 1 ? 's' : '') + ' effectué' + (n > 1 ? 's' : '') + '.');
+  }
   refresh();
 }
 
@@ -705,6 +793,7 @@ function openDialog(kind) {
       + '<tr><td>Cmd+F</td><td>Rechercher et remplacer</td></tr>'
       + '<tr><td>Cmd+Z / Cmd+Maj+Z</td><td>Annuler / rétablir</td></tr>'
       + '<tr><td>Cmd+B / Cmd+I / Cmd+U</td><td>Gras / italique / souligné</td></tr>'
+      + '<tr><td>Cmd+Alt+Maj+V</td><td>Coller sans mise en forme</td></tr>'
       + '<tr><td>Cmd+A</td><td>Tout sélectionner</td></tr>'
       + '<tr><td>Cmd + / Cmd -</td><td>Zoom avant / arrière</td></tr>'
       + '<tr><td>Cmd+0</td><td>Zoom 100 %</td></tr>'
