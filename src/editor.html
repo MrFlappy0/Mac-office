@@ -8,25 +8,40 @@
 html, body { height: 100%; }
 body { font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; background: #f5f5f7; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; color: #1d1d1f; }
 
-/* ---- Barre d'outils ---- */
-#toolbar { background: #f6f6f8; border-bottom: 1px solid #e3e3e8; padding: 7px 12px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
-#toolbar .group { display: flex; gap: 3px; align-items: center; padding-right: 10px; margin-right: 6px; border-right: 1px solid #e3e3e8; }
-#toolbar .group:last-child { border-right: none; margin-right: 0; padding-right: 0; }
-#toolbar button { min-width: 28px; height: 27px; padding: 0 7px; background: #fff; border: 1px solid #d2d2d8; border-radius: 6px; font-size: 12.5px; color: #333; cursor: pointer; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
-#toolbar button:hover { background: #eef0f4; border-color: #b8b8c0; }
-#toolbar button.active { background: rgba(10,102,194,.13); border-color: rgba(10,102,194,.45); color: #0a4bbd; }
-#toolbar button.tbtn-blue { color: #0a66c2; }
-#toolbar select { height: 27px; border: 1px solid #d2d2d8; border-radius: 6px; background: #fff; font-size: 12.5px; padding: 0 4px; max-width: 132px; color: #333; }
-#toolbar select:hover { border-color: #b8b8c0; }
-#toolbar button svg { display: block; }
+.hidden { display: none !important; }
 
-.seg { display: flex; background: #fff; border: 1px solid #d2d2d8; border-radius: 7px; overflow: hidden; }
-.seg button { border: none; border-radius: 0; border-right: 1px solid #d2d2d8; }
+/* ---- Barre d'onglets ---- */
+#tabstrip { background: rgba(246,246,248,.96); border-bottom: 1px solid #e3e3e8; padding: 7px 12px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+#tabs { display: flex; background: #e9e9ef; padding: 2px; border-radius: 9px; gap: 2px; }
+#tabs .tab { border: none; background: transparent; padding: 5px 16px; border-radius: 7px; font-size: 12.5px; color: #5a5a62; cursor: pointer; }
+#tabs .tab:hover { color: #1d1d1f; }
+#tabs .tab.active { background: #fff; color: #1d1d1f; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+#tabstrip .spacer { flex: 1; }
+#tabstrip .sep { width: 1px; height: 20px; background: #d8d8de; }
+.strip-btn { border: none; background: transparent; height: 28px; padding: 0 10px; border-radius: 7px; font-size: 12.5px; color: #3c3c43; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+.strip-btn:hover { background: #e8e8ee; color: #000; }
+.strip-btn.blue { color: #0a66c2; font-weight: 600; }
+.strip-btn.blue:hover { background: rgba(10,102,194,.1); }
+
+/* ---- Ruban (contenu des onglets) ---- */
+#ribbon { background: #fbfbfd; border-bottom: 1px solid #e3e3e8; padding: 7px 12px; min-height: 44px; }
+.tabpane { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.tabpane .group { display: flex; gap: 3px; align-items: center; padding-right: 12px; margin-right: 8px; border-right: 1px solid #e9e9ef; }
+.tabpane .group:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+#ribbon button { min-width: 28px; height: 28px; padding: 0 8px; background: #fff; border: 1px solid #d5d5dc; border-radius: 7px; font-size: 12.5px; color: #333; cursor: pointer; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+#ribbon button:hover { background: #eef0f4; border-color: #bcbcc6; }
+#ribbon button.active { background: rgba(10,102,194,.12); border-color: rgba(10,102,194,.5); color: #0a4bbd; }
+#ribbon select { height: 28px; border: 1px solid #d5d5dc; border-radius: 7px; background: #fff; font-size: 12.5px; padding: 0 5px; max-width: 128px; color: #333; }
+#ribbon select:hover { border-color: #bcbcc6; }
+#ribbon button svg { display: block; }
+
+.seg { display: flex; background: #fff; border: 1px solid #d5d5dc; border-radius: 8px; overflow: hidden; }
+.seg button { border: none; border-radius: 0; border-right: 1px solid #e2e2e8; min-width: 30px; }
 .seg button:last-child { border-right: none; }
 .seg button:hover { background: #eef0f4; }
-.seg button.active { background: rgba(10,102,194,.13); color: #0a4bbd; }
+.seg button.active { background: rgba(10,102,194,.12); color: #0a4bbd; }
 
-label.color-well { position: relative; overflow: hidden; width: 29px; height: 27px; background: #fff; border: 1px solid #d2d2d8; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+label.color-well { position: relative; overflow: hidden; width: 29px; height: 28px; background: #fff; border: 1px solid #d5d5dc; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 label.color-well:hover { background: #eef0f4; }
 label.color-well input { position: absolute; left: -30px; top: -30px; }
 .swatch { width: 15px; height: 15px; border: 1px solid #999; border-radius: 4px; }
@@ -34,18 +49,18 @@ label.color-well input { position: absolute; left: -30px; top: -30px; }
 /* ---- Barre contextuelle tableaux ---- */
 #tablebar { display: none; gap: 5px; padding: 6px 12px; background: #eef2f8; border-bottom: 1px solid #d5ddec; align-items: center; flex-wrap: wrap; }
 #tablebar.visible { display: flex; }
-#tablebar span.lbl { font-size: 11.5px; color: #0a66c2; font-weight: 700; margin-right: 6px; text-transform: uppercase; letter-spacing: .4px; }
+#tablebar span.lbl { font-size: 11px; color: #0a66c2; font-weight: 700; margin-right: 6px; text-transform: uppercase; letter-spacing: .4px; }
 #tablebar button { height: 24px; padding: 0 9px; font-size: 12px; border: 1px solid #b9c6e0; border-radius: 6px; background: #fff; color: #24466e; cursor: pointer; }
 #tablebar button:hover { background: #dce6f8; }
 #tablebar button.danger { color: #c23b3b; border-color: #ddb9b9; }
 #tablebar button.danger:hover { background: #f7dede; }
 
 /* ---- Recherche (carte flottante) ---- */
-#findbar { display: none; position: absolute; top: 12px; right: 14px; z-index: 40; gap: 6px; padding: 9px 11px; background: rgba(255,255,255,.97); border: 1px solid #d8d8de; border-radius: 11px; box-shadow: 0 6px 24px rgba(0,0,0,.14); align-items: center; }
+#findbar { display: none; position: absolute; top: 12px; right: 14px; z-index: 40; gap: 6px; padding: 9px 11px; background: rgba(255,255,255,.97); border: 1px solid #d8d8de; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.15); align-items: center; }
 #findbar.visible { display: flex; }
-#findbar input { height: 25px; border: 1px solid #d2d2d8; border-radius: 6px; padding: 0 7px; width: 160px; font-size: 12.5px; outline: none; }
+#findbar input { height: 26px; border: 1px solid #d2d2d8; border-radius: 7px; padding: 0 7px; width: 155px; font-size: 12.5px; outline: none; }
 #findbar input:focus { border-color: #0a66c2; box-shadow: 0 0 0 3px rgba(10,102,194,.15); }
-#findbar button { height: 25px; padding: 0 9px; font-size: 12px; border: 1px solid #d2d2d8; border-radius: 6px; background: #fff; color: #333; cursor: pointer; }
+#findbar button { height: 26px; padding: 0 9px; font-size: 12px; border: 1px solid #d2d2d8; border-radius: 7px; background: #fff; color: #333; cursor: pointer; }
 #findbar button:hover { background: #eef0f4; }
 #findbar button.primary { background: #0a66c2; border-color: #0a66c2; color: #fff; }
 #findbar button.primary:hover { background: #0b74dd; }
@@ -62,7 +77,7 @@ body.no-outline #sidebar { display: none; }
 .ol-h3 { padding-left: 40px; color: #666; }
 .ol-empty { padding: 8px 16px; font-size: 12px; color: #a1a1a6; line-height: 1.45; }
 
-#scroll { flex: 1; overflow: auto; padding: 26px 0 44px; }
+#scroll { flex: 1; overflow: auto; padding: 28px 0 46px; }
 #page { background: #fff; width: 794px; min-height: 1000px; margin: 0 auto; padding: 94px 94px; box-shadow: 0 1px 4px rgba(0,0,0,.16), 0 8px 28px rgba(0,0,0,.06); outline: none; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; color: #111; }
 #page p { margin: 0 0 10px; }
 #page h1 { font-size: 28pt; margin: 14pt 0 8pt; line-height: 1.2; color: #1d1d1f; }
@@ -83,12 +98,11 @@ body.no-outline #sidebar { display: none; }
 #statusbar #hint { color: #0a66c2; font-weight: 500; min-width: 1px; }
 #statusbar .spacer { flex: 1; }
 #statusbar .counts { display: flex; gap: 14px; }
-#statusbar select { height: 20px; font-size: 11.5px; border: 1px solid #d2d2d8; border-radius: 5px; background: #fff; color: #555; }
 
 /* ---- Dialogs ---- */
 #overlay { position: fixed; inset: 0; background: rgba(30,34,45,.4); display: flex; align-items: center; justify-content: center; z-index: 60; }
 #overlay.hidden { display: none; }
-#dialog { background: #fff; border-radius: 12px; padding: 20px 22px; width: 470px; max-width: 90vw; max-height: 70vh; overflow: auto; box-shadow: 0 16px 48px rgba(0,0,0,.3); }
+#dialog { background: #fff; border-radius: 13px; padding: 20px 22px; width: 470px; max-width: 90vw; max-height: 70vh; overflow: auto; box-shadow: 0 16px 48px rgba(0,0,0,.3); }
 #dialog h3 { font-size: 15px; margin-bottom: 14px; color: #1d1d1f; }
 .sym-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
 .sym { height: 34px; font-size: 16px; border: 1px solid #dcdce2; border-radius: 7px; background: #fff; cursor: pointer; }
@@ -102,114 +116,151 @@ body.no-outline #sidebar { display: none; }
 
 /* ---- Mode export PDF ---- */
 body.pdf-mode { background: #fff; }
-body.pdf-mode #toolbar, body.pdf-mode #tablebar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
+body.pdf-mode #tabstrip, body.pdf-mode #ribbon, body.pdf-mode #tablebar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
 body.pdf-mode #mainrow { display: block; overflow: visible; }
 body.pdf-mode #sidebar { display: none; }
 body.pdf-mode #scroll { overflow: visible; padding: 0; }
 body.pdf-mode #page { box-shadow: none; }
 </style>
 </head>
-<body>
+<body class="no-outline">
 
-<div id="toolbar">
-  <div class="group">
-    <button id="outlineBtn" title="Afficher ou masquer le plan du document" onclick="toggleOutline()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><line x1="9.5" y1="4" x2="9.5" y2="20"/></svg></button>
-    <button title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
-    <button title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+<div id="tabstrip">
+  <div id="tabs">
+    <button class="tab active" data-tab="home">Accueil</button>
+    <button class="tab" data-tab="insert">Insertion</button>
+    <button class="tab" data-tab="layout">Mise en page</button>
+    <button class="tab" data-tab="view">Affichage</button>
   </div>
-  <div class="group">
-    <select id="blockSel" title="Style de paragraphe" onchange="restoreSelection(); applyBlock(this.value)">
-      <option value="p">Corps de texte</option>
-      <option value="h1">Titre 1</option>
-      <option value="h2">Titre 2</option>
-      <option value="h3">Titre 3</option>
-      <option value="blockquote">Citation</option>
-      <option value="pre">Code</option>
-    </select>
-    <select id="fontSel" title="Police" onchange="restoreSelection(); cmd('fontName', this.value)">
-      <option value="Times New Roman">Times New Roman</option>
-      <option value="Helvetica">Helvetica</option>
-      <option value="Arial">Arial</option>
-      <option value="Verdana">Verdana</option>
-      <option value="Georgia">Georgia</option>
-      <option value="Palatino">Palatino</option>
-      <option value="Optima">Optima</option>
-      <option value="Courier New">Courier</option>
-      <option value="Menlo">Menlo</option>
-      <option value="Impact">Impact</option>
-      <option value="Comic Sans MS">Comic Sans MS</option>
-    </select>
-    <select id="sizeSel" title="Taille de police" onchange="setFontSize(this.value)">
-      <option value="8">8 pt</option>
-      <option value="10">10 pt</option>
-      <option value="12" selected>12 pt</option>
-      <option value="14">14 pt</option>
-      <option value="18">18 pt</option>
-      <option value="24">24 pt</option>
-      <option value="36">36 pt</option>
-      <option value="48">48 pt</option>
-      <option value="72">72 pt</option>
-    </select>
-    <select id="lineSel" title="Interligne" onchange="setLineHeight(this.value)">
-      <option value="1.15">Interligne : compact</option>
-      <option value="1.45" selected>Interligne : normal</option>
-      <option value="1.8">Interligne : large</option>
-      <option value="2.2">Interligne : très large</option>
-    </select>
-  </div>
-  <div class="group">
-    <button id="btnBold" data-cmd="bold" title="Gras (Cmd+B)" onclick="cmd('bold')"><b>G</b></button>
-    <button id="btnItalic" data-cmd="italic" title="Italique (Cmd+I)" onclick="cmd('italic')"><i>I</i></button>
-    <button id="btnUnderline" data-cmd="underline" title="Souligné (Cmd+U)" onclick="cmd('underline')"><span style="text-decoration:underline">S</span></button>
-    <button id="btnStrike" data-cmd="strikeThrough" title="Barré" onclick="cmd('strikeThrough')"><span style="text-decoration:line-through">S</span></button>
-    <button data-cmd="superscript" title="Exposant" onclick="cmd('superscript')">x<sup>2</sup></button>
-    <button data-cmd="subscript" title="Indice" onclick="cmd('subscript')">x<sub>2</sub></button>
-  </div>
-  <div class="group">
-    <label class="color-well" title="Couleur du texte">
-      <span class="swatch" id="foreSwatch" style="background:#111111"></span>
-      <input type="color" id="foreInput" value="#111111" oninput="applyForeColor(this.value)">
-    </label>
-    <label class="color-well" title="Surlignage">
-      <span class="swatch" id="hiliteSwatch" style="background:#ffe066"></span>
-      <input type="color" id="hiliteInput" value="#ffe066" oninput="applyHilite(this.value)">
-    </label>
-  </div>
-  <div class="group">
-    <div class="seg" title="Alignement">
-      <button data-cmd="justifyLeft" title="Aligner à gauche" onclick="cmd('justifyLeft')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
-      <button data-cmd="justifyCenter" title="Centrer" onclick="cmd('justifyCenter')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
-      <button data-cmd="justifyRight" title="Aligner à droite" onclick="cmd('justifyRight')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg></button>
-      <button data-cmd="justifyFull" title="Justifier" onclick="cmd('justifyFull')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+  <span class="spacer"></span>
+  <button class="strip-btn" title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
+  <button class="strip-btn" title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+  <span class="sep"></span>
+  <button class="strip-btn" title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
+  <button class="strip-btn" title="Ouvrir un document (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
+  <button class="strip-btn blue" title="Enregistrer au format Office .docx (Cmd+S)" onclick="requestSave('docx')">Enregistrer</button>
+  <button class="strip-btn" title="Enregistrer au format Word 97 (.doc) (Cmd+Maj+S)" onclick="requestSave('doc')">Word 97</button>
+  <button class="strip-btn" title="Enregistrer en HTML" onclick="requestSave('html')">HTML</button>
+  <button class="strip-btn" title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
+  <button class="strip-btn" title="Imprimer (Cmd+P)" onclick="native({type:'print'})">Imprimer</button>
+</div>
+
+<div id="ribbon">
+
+  <div class="tabpane" id="pane-home">
+    <div class="group">
+      <select id="blockSel" title="Style de paragraphe" onchange="restoreSelection(); applyBlock(this.value)">
+        <option value="p">Corps de texte</option>
+        <option value="h1">Titre 1</option>
+        <option value="h2">Titre 2</option>
+        <option value="h3">Titre 3</option>
+        <option value="blockquote">Citation</option>
+        <option value="pre">Code</option>
+      </select>
+      <select id="fontSel" title="Police" onchange="restoreSelection(); cmd('fontName', this.value)">
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Helvetica">Helvetica</option>
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Palatino">Palatino</option>
+        <option value="Optima">Optima</option>
+        <option value="Courier New">Courier</option>
+        <option value="Menlo">Menlo</option>
+        <option value="Impact">Impact</option>
+        <option value="Comic Sans MS">Comic Sans MS</option>
+      </select>
+      <select id="sizeSel" title="Taille de police" onchange="setFontSize(this.value)">
+        <option value="8">8 pt</option>
+        <option value="10">10 pt</option>
+        <option value="12" selected>12 pt</option>
+        <option value="14">14 pt</option>
+        <option value="18">18 pt</option>
+        <option value="24">24 pt</option>
+        <option value="36">36 pt</option>
+        <option value="48">48 pt</option>
+        <option value="72">72 pt</option>
+      </select>
     </div>
-    <div class="seg" title="Listes">
-      <button data-cmd="insertUnorderedList" title="Liste à puces" onclick="cmd('insertUnorderedList')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
-      <button data-cmd="insertOrderedList" title="Liste numérotée" onclick="cmd('insertOrderedList')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+    <div class="group">
+      <button id="btnBold" data-cmd="bold" title="Gras (Cmd+B)" onclick="cmd('bold')"><b>G</b></button>
+      <button id="btnItalic" data-cmd="italic" title="Italique (Cmd+I)" onclick="cmd('italic')"><i>I</i></button>
+      <button id="btnUnderline" data-cmd="underline" title="Souligné (Cmd+U)" onclick="cmd('underline')"><span style="text-decoration:underline">S</span></button>
+      <button id="btnStrike" data-cmd="strikeThrough" title="Barré" onclick="cmd('strikeThrough')"><span style="text-decoration:line-through">S</span></button>
+      <button data-cmd="superscript" title="Exposant" onclick="cmd('superscript')">x<sup>2</sup></button>
+      <button data-cmd="subscript" title="Indice" onclick="cmd('subscript')">x<sub>2</sub></button>
     </div>
-    <button title="Diminuer le retrait" onclick="cmd('outdent')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 3 12 9 6"/><line x1="3" y1="12" x2="13" y2="12"/><line x1="17" y1="6" x2="21" y2="6"/><line x1="17" y1="12" x2="21" y2="12"/><line x1="17" y1="18" x2="21" y2="18"/></svg></button>
-    <button title="Augmenter le retrait" onclick="cmd('indent')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 21 12 15 6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="7" y2="6"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="3" y1="18" x2="7" y2="18"/></svg></button>
+    <div class="group">
+      <label class="color-well" title="Couleur du texte">
+        <span class="swatch" id="foreSwatch" style="background:#111111"></span>
+        <input type="color" id="foreInput" value="#111111" oninput="applyForeColor(this.value)">
+      </label>
+      <label class="color-well" title="Surlignage">
+        <span class="swatch" id="hiliteSwatch" style="background:#ffe066"></span>
+        <input type="color" id="hiliteInput" value="#ffe066" oninput="applyHilite(this.value)">
+      </label>
+    </div>
+    <div class="group">
+      <button title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
+    </div>
   </div>
-  <div class="group">
-    <button title="Insérer un lien" onclick="insertLink()">Lien</button>
-    <button title="Insérer une image" onclick="native({type:'image'})">Image</button>
-    <button title="Insérer un tableau" onclick="insertTable()">Tableau</button>
-    <button title="Caractères spéciaux" onclick="openDialog('symbols')">Symboles</button>
-    <button title="Insérer la date du jour" onclick="insertDate()">Date</button>
-    <button title="Page de garde" onclick="insertCover()">Page de garde</button>
-    <button title="Ligne horizontale" onclick="cmd('insertHorizontalRule')">Ligne</button>
+
+  <div class="tabpane hidden" id="pane-insert">
+    <div class="group">
+      <button title="Insérer un lien" onclick="insertLink()">Lien</button>
+      <button title="Insérer une image" onclick="native({type:'image'})">Image</button>
+      <button title="Insérer un tableau" onclick="insertTable()">Tableau</button>
+      <button title="Caractères spéciaux" onclick="openDialog('symbols')">Symboles</button>
+    </div>
+    <div class="group">
+      <button title="Insérer la date du jour" onclick="insertDate()">Date</button>
+      <button title="Page de garde" onclick="insertCover()">Page de garde</button>
+      <button title="Ligne horizontale" onclick="cmd('insertHorizontalRule')">Ligne</button>
+    </div>
   </div>
-  <div class="group">
-    <button title="Effacer la mise en forme" onclick="cmd('removeFormat')">Effacer</button>
-    <button title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
+
+  <div class="tabpane hidden" id="pane-layout">
+    <div class="group">
+      <div class="seg" title="Alignement">
+        <button data-cmd="justifyLeft" title="Aligner à gauche" onclick="cmd('justifyLeft')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
+        <button data-cmd="justifyCenter" title="Centrer" onclick="cmd('justifyCenter')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
+        <button data-cmd="justifyRight" title="Aligner à droite" onclick="cmd('justifyRight')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg></button>
+        <button data-cmd="justifyFull" title="Justifier" onclick="cmd('justifyFull')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+      </div>
+      <div class="seg" title="Listes">
+        <button data-cmd="insertUnorderedList" title="Liste à puces" onclick="cmd('insertUnorderedList')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+        <button data-cmd="insertOrderedList" title="Liste numérotée" onclick="cmd('insertOrderedList')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+      </div>
+      <button title="Diminuer le retrait" onclick="cmd('outdent')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 3 12 9 6"/><line x1="3" y1="12" x2="13" y2="12"/><line x1="17" y1="6" x2="21" y2="6"/><line x1="17" y1="12" x2="21" y2="12"/><line x1="17" y1="18" x2="21" y2="18"/></svg></button>
+      <button title="Augmenter le retrait" onclick="cmd('indent')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 21 12 15 6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="7" y2="6"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="3" y1="18" x2="7" y2="18"/></svg></button>
+    </div>
+    <div class="group">
+      <select id="lineSel" title="Interligne" onchange="setLineHeight(this.value)">
+        <option value="1.15">Interligne : compact</option>
+        <option value="1.45" selected>Interligne : normal</option>
+        <option value="1.8">Interligne : large</option>
+        <option value="2.2">Interligne : très large</option>
+      </select>
+    </div>
+    <div class="group">
+      <button title="Effacer la mise en forme" onclick="cmd('removeFormat')">Effacer la mise en forme</button>
+    </div>
   </div>
-  <div class="group">
-    <button title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
-    <button title="Ouvrir (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
-    <button class="tbtn-blue" title="Enregistrer en HTML (Cmd+S)" onclick="requestSave('html')">Enregistrer</button>
-    <button class="tbtn-blue" title="Enregistrer au format Word (.doc) (Cmd+Maj+S)" onclick="requestSave('doc')">Word</button>
-    <button class="tbtn-blue" title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
-    <button title="Imprimer (Cmd+P)" onclick="native({type:'print'})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 3 18 3 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg></button>
+
+  <div class="tabpane hidden" id="pane-view">
+    <div class="group">
+      <button id="outlineBtn" title="Afficher ou masquer le plan du document" onclick="toggleOutline()">Plan du document</button>
+    </div>
+    <div class="group">
+      <button title="Zoom arrière (Cmd+-)" onclick="zoomOut()">-</button>
+      <button title="Zoom 100 % (Cmd+0)" onclick="zoomReset()">100 %</button>
+      <button title="Zoom avant (Cmd++)" onclick="zoomIn()">+</button>
+    </div>
+    <div class="group">
+      <button title="Raccourcis clavier" onclick="openDialog('shortcuts')">Raccourcis</button>
+    </div>
   </div>
+
 </div>
 
 <div id="tablebar">
@@ -253,13 +304,6 @@ body.pdf-mode #page { box-shadow: none; }
   </span>
   <span class="spacer"></span>
   <span>A4 · 2,5 cm</span>
-  <select id="zoomSel" onchange="setZoom(this.value)" title="Zoom">
-    <option value="0.75">75 %</option>
-    <option value="1" selected>100 %</option>
-    <option value="1.25">125 %</option>
-    <option value="1.5">150 %</option>
-    <option value="2">200 %</option>
-  </select>
 </div>
 
 <div id="overlay" class="hidden"><div id="dialog"></div></div>
@@ -278,6 +322,20 @@ function native(obj) {
     window.webkit.messageHandlers.app.postMessage(obj);
   }
 }
+
+/* ================= Onglets ================= */
+
+document.querySelectorAll('#tabs .tab').forEach(function (t) {
+  t.addEventListener('mousedown', function (e) { e.preventDefault(); });
+  t.addEventListener('click', function () {
+    document.querySelectorAll('#tabs .tab').forEach(function (x) { x.classList.remove('active'); });
+    t.classList.add('active');
+    document.querySelectorAll('.tabpane').forEach(function (p) { p.classList.add('hidden'); });
+    document.getElementById('pane-' + t.getAttribute('data-tab')).classList.remove('hidden');
+  });
+});
+
+/* ================= Commandes d'édition ================= */
 
 function cmd(c, v) {
   page.focus();
@@ -301,7 +359,7 @@ document.addEventListener('selectionchange', function () {
   syncTableBar();
 });
 
-document.querySelectorAll('#toolbar button, #tablebar button, .seg button').forEach(function (b) {
+document.querySelectorAll('#ribbon button, #tablebar button, #tabstrip button').forEach(function (b) {
   b.addEventListener('mousedown', function (e) { e.preventDefault(); });
 });
 
@@ -319,7 +377,7 @@ function state(c) {
 }
 
 function syncToolbar() {
-  document.querySelectorAll('#toolbar button[data-cmd]').forEach(function (b) {
+  document.querySelectorAll('#ribbon button[data-cmd]').forEach(function (b) {
     b.classList.toggle('active', state(b.getAttribute('data-cmd')));
   });
   var sel = document.getElementById('blockSel');
@@ -329,7 +387,7 @@ function syncToolbar() {
   if (sel.querySelector('option[value="' + cur + '"]')) sel.value = cur;
 }
 
-/* ---- Compteurs ---- */
+/* ---- Compteurs et messages ---- */
 
 function refreshCounts() {
   var t = page.innerText.replace(/\u00a0/g, ' ').trim();
@@ -338,8 +396,6 @@ function refreshCounts() {
   document.getElementById('countChars').textContent = t.length + (t.length > 1 ? ' caractères' : ' caractère');
   document.getElementById('readTime').textContent = words > 150 ? '· environ ' + Math.ceil(words / 200) + ' min de lecture' : '';
 }
-
-/* ---- Barre d'état : messages ---- */
 
 function hint(msg) {
   var el = document.getElementById('hint');
@@ -384,19 +440,6 @@ function openHTML(html) {
   refresh();
 }
 
-function openText(text) {
-  var blocks = text.split(/\n\s*\n/);
-  var html = '';
-  for (var i = 0; i < blocks.length; i++) {
-    var esc = blocks[i].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
-    html += '<p>' + (esc || '<br>') + '</p>';
-  }
-  page.innerHTML = html || '<p><br></p>';
-  dirty = false;
-  try { localStorage.removeItem('paper.autosave'); } catch (e) {}
-  refresh();
-}
-
 /* ---- Sauvegarde automatique ---- */
 
 setInterval(function () {
@@ -433,7 +476,7 @@ function pastePlain() {
   hint('Mode texte seul actif : collez avec Cmd+V.');
 }
 
-/* ---- Insertions ---- */
+/* ================= Insertions ================= */
 
 function insertImage(dataUrl) {
   restoreSelection();
@@ -513,7 +556,7 @@ function insertCover() {
   refresh();
 }
 
-/* ---- Édition de tableaux ---- */
+/* ================= Édition de tableaux ================= */
 
 function caretCell() {
   var s = window.getSelection();
@@ -605,7 +648,7 @@ function tableDelTable() {
   refresh();
 }
 
-/* ---- Plan du document ---- */
+/* ================= Plan du document ================= */
 
 function buildOutline() {
   var out = document.getElementById('outline');
@@ -616,7 +659,7 @@ function buildOutline() {
     var txt = h.textContent.trim() || '(sans titre)';
     html += '<div class="ol-item ol-' + h.tagName.toLowerCase() + '" data-idx="' + i + '" title="' + escapeAttr(txt) + '">' + escapeHtml(txt) + '</div>';
   }
-  out.innerHTML = html || '<div class="ol-empty">Aucun titre pour le moment. Utilisez les styles Titre 1 à 3 pour structurer votre document : ils apparaîtront ici.</div>';
+  out.innerHTML = html || '<div class="ol-empty">Aucun titre pour le moment. Utilisez les styles Titre 1 à 3 (onglet Accueil) : ils apparaîtront ici.</div>';
   out.querySelectorAll('.ol-item').forEach(function (el) {
     el.onclick = function () {
       var h = page.querySelectorAll('h1, h2, h3')[parseInt(el.getAttribute('data-idx'), 10)];
@@ -631,7 +674,7 @@ function toggleOutline() {
   buildOutline();
 }
 
-/* ---- Mise en forme ---- */
+/* ================= Mise en forme ================= */
 
 function applyBlock(v) {
   cmd('formatBlock', '<' + v + '>');
@@ -671,17 +714,22 @@ function applyHilite(v) {
   refresh();
 }
 
-/* ---- Enregistrement ---- */
+/* ================= Enregistrement ================= */
 
 function requestSave(ext) {
+  if (ext === 'docx') {
+    try {
+      var b64 = buildDocx();
+      native({ type: 'saveDocx', b64: b64 });
+    } catch (e) {
+      hint('Export Word (.docx) impossible : ' + (e && e.message ? e.message : e));
+    }
+    return;
+  }
   native({ type: 'save', ext: ext, html: page.innerHTML });
 }
 
-function requestSaveText() {
-  native({ type: 'saveText', text: page.innerText });
-}
-
-/* ---- Recherche et remplacement ---- */
+/* ================= Recherche et remplacement ================= */
 
 function toggleFind(show) {
   findbar.classList.toggle('visible', show);
@@ -742,13 +790,10 @@ function replaceAll() {
   refresh();
 }
 
-/* ---- Zoom ---- */
+/* ================= Zoom ================= */
 
 function setZoom(z) {
   document.body.style.zoom = z;
-  var sel = document.getElementById('zoomSel');
-  var v = String(z);
-  if (sel.querySelector('option[value="' + v + '"]')) sel.value = v;
 }
 
 function zoomIndex() {
@@ -769,7 +814,7 @@ function zoomReset() {
   setZoom(1);
 }
 
-/* ---- Dialogs ---- */
+/* ================= Dialogs ================= */
 
 var SYMBOLS = ['«','»','“','”','‘','’','—','–','…','€','œ','Œ','æ','Æ','©','®','™','°','±','×','÷','²','³','½','¼','¾','§','¶','†','•','¡','¿','Á','À','Â','Ä','É','È','Ê','Ë','Í','Ì','Î','Ï','Ó','Ò','Ô','Ö','Ú','Ù','Û','Ü','Ç','Ÿ'];
 
@@ -785,9 +830,9 @@ function openDialog(kind) {
   } else if (kind === 'shortcuts') {
     html += '<h3>Raccourcis clavier</h3><table class="keys">'
       + '<tr><td>Cmd+N</td><td>Nouveau document</td></tr>'
-      + '<tr><td>Cmd+O</td><td>Ouvrir (HTML, RTF, TXT, MD)</td></tr>'
-      + '<tr><td>Cmd+S</td><td>Enregistrer en HTML</td></tr>'
-      + '<tr><td>Cmd+Maj+S</td><td>Enregistrer au format Word (.doc)</td></tr>'
+      + '<tr><td>Cmd+O</td><td>Ouvrir (.docx, .doc, .html)</td></tr>'
+      + '<tr><td>Cmd+S</td><td>Enregistrer au format Office (.docx)</td></tr>'
+      + '<tr><td>Cmd+Maj+S</td><td>Enregistrer au format Word 97 (.doc)</td></tr>'
       + '<tr><td>Cmd+E</td><td>Exporter en PDF</td></tr>'
       + '<tr><td>Cmd+P</td><td>Imprimer</td></tr>'
       + '<tr><td>Cmd+F</td><td>Rechercher et remplacer</td></tr>'
@@ -817,7 +862,7 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && !document.getElementById('overlay').classList.contains('hidden')) closeDialog();
 });
 
-/* ---- Mode export PDF ---- */
+/* ================= Mode export PDF ================= */
 
 function enterPdfMode() {
   savedZoom = document.body.style.zoom || '1';
@@ -831,7 +876,340 @@ function exitPdfMode() {
   document.body.style.zoom = savedZoom;
 }
 
-/* ---- Initialisation ---- */
+/* ================= Export Office Open XML (.docx) ================= */
+
+var docxRels = [];
+var docxRelCounter = 0;
+
+function xmlEsc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function baseCtx() {
+  return { b: false, i: false, u: false, st: false, va: null, color: null, shd: null, sz: null, font: null };
+}
+
+function cssColorToHex(v) {
+  if (!v) return null;
+  v = String(v).trim().toLowerCase();
+  var m = v.match(/^#([0-9a-f]{3})$/);
+  if (m) return m[1][0] + m[1][0] + m[1][1] + m[1][1] + m[1][2] + m[1][2];
+  m = v.match(/^#([0-9a-f]{6})/);
+  if (m) return m[1];
+  m = v.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+  if (m) {
+    function h2(n) { var h = parseInt(n, 10).toString(16); return h.length === 1 ? '0' + h : h; }
+    return h2(m[1]) + h2(m[2]) + h2(m[3]);
+  }
+  return null;
+}
+
+function cssSizeToHalfPt(v) {
+  if (!v) return null;
+  var m = v.match(/^([\d.]+)pt/);
+  if (m) return String(Math.round(parseFloat(m[1]) * 2));
+  m = v.match(/^([\d.]+)px/);
+  if (m) return String(Math.round(parseFloat(m[1]) * 1.5));
+  return null;
+}
+
+function makeRun(text, c) {
+  var rpr = '';
+  if (c.font) rpr += '<w:rFonts w:ascii="' + xmlEsc(c.font) + '" w:hAnsi="' + xmlEsc(c.font) + '"/>';
+  if (c.b) rpr += '<w:b/>';
+  if (c.i) rpr += '<w:i/>';
+  if (c.u) rpr += '<w:u w:val="single"/>';
+  if (c.st) rpr += '<w:strike/>';
+  if (c.color) rpr += '<w:color w:val="' + c.color.toUpperCase() + '"/>';
+  if (c.shd) rpr += '<w:shd w:val="clear" w:color="auto" w:fill="' + c.shd.toUpperCase() + '"/>';
+  if (c.sz) rpr += '<w:sz w:val="' + c.sz + '"/><w:szCs w:val="' + c.sz + '"/>';
+  if (c.va) rpr += '<w:vertAlign w:val="' + c.va + '"/>';
+  return '<w:r>' + (rpr ? '<w:rPr>' + rpr + '</w:rPr>' : '') + '<w:t xml:space="preserve">' + xmlEsc(text) + '</w:t></w:r>';
+}
+
+function inlineRuns(node, ctx, out) {
+  if (node.nodeType === 3) {
+    if (node.nodeValue) out.push(makeRun(node.nodeValue, ctx));
+    return;
+  }
+  if (node.nodeType !== 1) return;
+  var tag = node.tagName;
+  if (tag === 'BR') { out.push('<w:r><w:br/></w:r>'); return; }
+  if (tag === 'IMG') { return; }
+  var c = { b: ctx.b, i: ctx.i, u: ctx.u, st: ctx.st, va: ctx.va, color: ctx.color, shd: ctx.shd, sz: ctx.sz, font: ctx.font };
+  if (tag === 'B' || tag === 'STRONG') c.b = true;
+  if (tag === 'I' || tag === 'EM') c.i = true;
+  if (tag === 'U') c.u = true;
+  if (tag === 'S' || tag === 'STRIKE' || tag === 'DEL') c.st = true;
+  if (tag === 'SUP') c.va = 'superscript';
+  if (tag === 'SUB') c.va = 'subscript';
+  var st = node.style || {};
+  if (st.color) c.color = cssColorToHex(st.color);
+  if (st.backgroundColor) c.shd = cssColorToHex(st.backgroundColor);
+  if (st.fontSize) c.sz = cssSizeToHalfPt(st.fontSize);
+  if (st.fontFamily) c.font = st.fontFamily.split(',')[0].replace(/["']/g, '').trim();
+  if (st.fontWeight && (st.fontWeight === 'bold' || parseInt(st.fontWeight, 10) >= 600)) c.b = true;
+  if (st.fontStyle && st.fontStyle !== 'normal') c.i = true;
+  if (st.textDecoration) {
+    if (st.textDecoration.indexOf('underline') !== -1) c.u = true;
+    if (st.textDecoration.indexOf('line-through') !== -1) c.st = true;
+  }
+  if (tag === 'A') {
+    var href = node.getAttribute('href');
+    if (href) {
+      docxRelCounter += 1;
+      var rid = 'rId' + (docxRelCounter + 2);
+      docxRels.push({ id: rid, target: href });
+      out.push('<w:hyperlink r:id="' + rid + '">');
+      for (var k = 0; k < node.childNodes.length; k++) inlineRuns(node.childNodes[k], c, out);
+      out.push('</w:hyperlink>');
+      return;
+    }
+  }
+  for (var j = 0; j < node.childNodes.length; j++) inlineRuns(node.childNodes[j], c, out);
+}
+
+var HEADING_STYLE = { H1: 'Heading1', H2: 'Heading2', H3: 'Heading3' };
+var BLOCK_TAGS = { P: 1, H1: 1, H2: 1, H3: 1, BLOCKQUOTE: 1, PRE: 1, DIV: 1, UL: 1, OL: 1, TABLE: 1, HR: 1 };
+
+function jcOf(el) {
+  var a = (el.style && el.style.textAlign) || el.getAttribute('align') || '';
+  a = a.toLowerCase();
+  if (a === 'left' || a === 'start') return 'left';
+  if (a === 'center') return 'center';
+  if (a === 'right' || a === 'end') return 'right';
+  if (a === 'justify') return 'both';
+  return '';
+}
+
+function pXml(tag, runs, opts) {
+  var ppr = '';
+  if (tag && HEADING_STYLE[tag]) ppr += '<w:pStyle w:val="' + HEADING_STYLE[tag] + '"/>';
+  else if (tag === 'BLOCKQUOTE') ppr += '<w:pStyle w:val="Quote"/>';
+  else if (tag === 'PRE') ppr += '<w:pStyle w:val="Code"/>';
+  if (opts.numId) ppr += '<w:numPr><w:ilvl w:val="' + opts.ilvl + '"/><w:numId w:val="' + opts.numId + '"/></w:numPr>';
+  if (opts.jc) ppr += '<w:jc w:val="' + opts.jc + '"/>';
+  return '<w:p>' + (ppr ? '<w:pPr>' + ppr + '</w:pPr>' : '') + runs.join('') + '</w:p>';
+}
+
+function emptyRun() {
+  return '<w:r><w:t xml:space="preserve"> </w:t></w:r>';
+}
+
+function hasBlockChildren(el) {
+  for (var i = 0; i < el.childNodes.length; i++) {
+    var n = el.childNodes[i];
+    if (n.nodeType === 1 && BLOCK_TAGS[n.tagName]) return true;
+  }
+  return false;
+}
+
+function blockXml(node, out, depth) {
+  if (node.nodeType === 3) {
+    var t = node.nodeValue.trim();
+    if (t) out.push(pXml(null, [makeRun(t, baseCtx())], {}));
+    return;
+  }
+  if (node.nodeType !== 1) return;
+  var tag = node.tagName;
+  if (tag === 'UL' || tag === 'OL') { listXml(node, out, depth || 0); return; }
+  if (tag === 'TABLE') { tableXml(node, out); return; }
+  if (tag === 'HR') {
+    out.push('<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="AAAAAA"/></w:pBdr></w:pPr></w:p>');
+    return;
+  }
+  if (tag === 'DIV' && hasBlockChildren(node)) {
+    for (var i = 0; i < node.childNodes.length; i++) blockXml(node.childNodes[i], out, depth || 0);
+    return;
+  }
+  if (tag === 'P' || HEADING_STYLE[tag] || tag === 'BLOCKQUOTE' || tag === 'PRE' || tag === 'DIV') {
+    var runs = [];
+    for (var k = 0; k < node.childNodes.length; k++) inlineRuns(node.childNodes[k], baseCtx(), runs);
+    if (!runs.length) runs.push(emptyRun());
+    out.push(pXml(tag, runs, { jc: jcOf(node) }));
+  }
+}
+
+function listXml(listEl, out, depth) {
+  var numId = listEl.tagName === 'OL' ? 2 : 1;
+  for (var i = 0; i < listEl.childNodes.length; i++) {
+    var li = listEl.childNodes[i];
+    if (li.nodeType !== 1 || li.tagName !== 'LI') continue;
+    var runs = [];
+    for (var k = 0; k < li.childNodes.length; k++) {
+      var c = li.childNodes[k];
+      if (c.nodeType === 1 && (c.tagName === 'UL' || c.tagName === 'OL')) continue;
+      inlineRuns(c, baseCtx(), runs);
+    }
+    if (!runs.length) runs.push(emptyRun());
+    out.push(pXml(null, runs, { numId: numId, ilvl: Math.min(depth, 5) }));
+    for (var j = 0; j < li.childNodes.length; j++) {
+      var cc = li.childNodes[j];
+      if (cc.nodeType === 1 && (cc.tagName === 'UL' || cc.tagName === 'OL')) listXml(cc, out, depth + 1);
+    }
+  }
+}
+
+function tableXml(tbl, out) {
+  var borders = ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(function (s) {
+    return '<w:' + s + ' w:val="single" w:sz="4" w:space="0" w:color="999999"/>';
+  }).join('');
+  var xml = '<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders>' + borders + '</w:tblBorders></w:tblPr>';
+  for (var r = 0; r < tbl.rows.length; r++) {
+    xml += '<w:tr>';
+    var row = tbl.rows[r];
+    for (var c = 0; c < row.cells.length; c++) {
+      var cell = row.cells[c];
+      var tcpr = '<w:tcW w:w="0" w:type="auto"/>';
+      if (cell.tagName === 'TH') tcpr += '<w:shd w:val="clear" w:color="auto" w:fill="EEF0F4"/>';
+      xml += '<w:tc><w:tcPr>' + tcpr + '</w:tcPr>';
+      var runs = [];
+      for (var k = 0; k < cell.childNodes.length; k++) inlineRuns(cell.childNodes[k], baseCtx(), runs);
+      xml += pXml(null, runs.length ? runs : [emptyRun()], {});
+      xml += '</w:tc>';
+    }
+    xml += '</w:tr>';
+  }
+  xml += '</w:tbl>';
+  out.push(xml);
+  out.push('<w:p/>');
+}
+
+/* ---- Conteneur ZIP (stockage, sans compression) ---- */
+
+function crc32(bytes) {
+  if (!crc32.table) {
+    crc32.table = [];
+    for (var n = 0; n < 256; n++) {
+      var c = n;
+      for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      crc32.table[n] = c >>> 0;
+    }
+  }
+  var t = crc32.table;
+  var crc = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) crc = (crc >>> 8) ^ t[(crc ^ bytes[i]) & 0xFF];
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
+function zipStore(files) {
+  var enc = new TextEncoder();
+  var chunks = [];
+  var central = [];
+  var offset = 0;
+  function le16(n) { return [n & 255, (n >>> 8) & 255]; }
+  function le32(n) { return [n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255]; }
+  files.forEach(function (f) {
+    var nameBytes = enc.encode(f.name);
+    var data = (typeof f.data === 'string') ? enc.encode(f.data) : f.data;
+    var crc = crc32(data);
+    var local = [].concat(le32(0x04034b50), le16(20), le16(0), le16(0), le16(0), le16(0x21), le32(crc), le32(data.length), le32(data.length), le16(nameBytes.length), le16(0));
+    chunks.push(new Uint8Array(local), nameBytes, data);
+    central.push({ nameBytes: nameBytes, crc: crc, size: data.length, offset: offset });
+    offset += local.length + nameBytes.length + data.length;
+  });
+  var centralSize = 0;
+  var centralChunks = [];
+  central.forEach(function (e) {
+    var c = [].concat(le32(0x02014b50), le16(20), le16(20), le16(0), le16(0), le16(0), le16(0x21), le32(e.crc), le32(e.size), le32(e.size), le16(e.nameBytes.length), le16(0), le16(0), le16(0), le16(0), le32(0), le32(e.offset));
+    centralChunks.push(new Uint8Array(c), e.nameBytes);
+    centralSize += c.length + e.nameBytes.length;
+  });
+  var eocd = [].concat(le32(0x06054b50), le16(0), le16(0), le16(files.length), le16(files.length), le32(centralSize), le32(offset), le16(0));
+  var all = chunks.concat(centralChunks);
+  all.push(new Uint8Array(eocd));
+  var total = 0;
+  all.forEach(function (a) { total += a.length; });
+  var out = new Uint8Array(total);
+  var pos = 0;
+  all.forEach(function (a) { out.set(a, pos); pos += a.length; });
+  return out;
+}
+
+function bytesToB64(bytes) {
+  var s = '';
+  for (var i = 0; i < bytes.length; i += 0x8000) {
+    s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(s);
+}
+
+/* ---- Assemblage du paquet .docx ---- */
+
+function buildDocx() {
+  docxRels = [];
+  docxRelCounter = 0;
+
+  var body = [];
+  for (var i = 0; i < page.childNodes.length; i++) blockXml(page.childNodes[i], body, 0);
+
+  var documentXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+    + '<w:body>' + body.join('')
+    + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1417" w:right="1417" w:bottom="1417" w:left="1417" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr>'
+    + '</w:body></w:document>';
+
+  var stylesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+    + '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr></w:rPrDefault></w:docDefaults>'
+    + '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style>'
+    + '<w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:pPr><w:keepNext/><w:spacing w:before="240" w:after="120"/></w:pPr><w:rPr><w:b/><w:color w:val="1D1D1F"/><w:sz w:val="56"/><w:szCs w:val="56"/></w:rPr></w:style>'
+    + '<w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:pPr><w:keepNext/><w:spacing w:before="200" w:after="100"/></w:pPr><w:rPr><w:b/><w:color w:val="1D1D1F"/><w:sz w:val="40"/><w:szCs w:val="40"/></w:rPr></w:style>'
+    + '<w:style w:type="paragraph" w:styleId="Heading3"><w:name w:val="heading 3"/><w:basedOn w:val="Normal"/><w:pPr><w:keepNext/><w:spacing w:before="160" w:after="80"/></w:pPr><w:rPr><w:b/><w:sz w:val="30"/><w:szCs w:val="30"/></w:rPr></w:style>'
+    + '<w:style w:type="paragraph" w:styleId="Quote"><w:name w:val="Quote"/><w:basedOn w:val="Normal"/><w:pPr><w:ind w:left="360"/></w:pPr><w:rPr><w:i/><w:color w:val="555555"/></w:rPr></w:style>'
+    + '<w:style w:type="paragraph" w:styleId="Code"><w:name w:val="HTML Preformatted"/><w:basedOn w:val="Normal"/><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/><w:sz w:val="20"/></w:rPr></w:style>'
+    + '</w:styles>';
+
+  var lvl = function (ilvl, fmt, text) {
+    return '<w:lvl w:ilvl="' + ilvl + '"><w:start w:val="1"/><w:numFmt   };
+  var bulletLevels = '', decimalLevels = '';
+  for (var l = 0; l < 6; l++) {
+    bulletLevels += lvl(l, 'bullet', '•');
+    decimalLevels += lvl(l, 'decimal', '%' + (l + 1) + '.');
+  }
+  var numberingXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+    + '<w:abstractNum w:abstractNumId="0">' + bulletLevels + '</w:abstractNum>'
+    + '<w:abstractNum w:abstractNumId="1">' + decimalLevels + '</w:abstractNum>'
+    + '<w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num>'
+    + '<w:num w:numId="2"><w:abstractNumId w:val="1"/></w:num>'
+    + '</w:numbering>';
+
+  var relsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+    + '</Relationships>';
+
+  var docRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+    + '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>'
+    + docxRels.map(function (r) {
+        return '<Relationship Id="' + r.id + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="' + xmlEsc(r.target) + '" TargetMode="External"/>';
+      }).join('')
+    + '</Relationships>';
+
+  var contentTypesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+    + '<Default Extension="xml" ContentType="application/xml"/>'
+    + '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+    + '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'
+    + '<Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/>'
+    + '</Types>';
+
+  var zip = zipStore([
+    { name: '[Content_Types].xml', data: contentTypesXml },
+    { name: '_rels/.rels', data: relsXml },
+    { name: 'word/document.xml', data: documentXml },
+    { name: 'word/styles.xml', data: stylesXml },
+    { name: 'word/numbering.xml', data: numberingXml },
+    { name: 'word/_rels/document.xml.rels', data: docRelsXml }
+  ]);
+  return bytesToB64(zip);
+}
+
+/* ================= Initialisation ================= */
 
 document.execCommand('defaultParagraphSeparator', false, 'p');
 buildOutline();

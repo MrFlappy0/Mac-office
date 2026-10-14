@@ -12,7 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
     var pendingClose = false
     var pendingQuit = false
     let docType = UTType(filenameExtension: "doc") ?? .data
-    let mdType = UTType(filenameExtension: "md") ?? .plainText
+    let docxType = UTType(filenameExtension: "docx") ?? .data
 
     // MARK: - Demarrage
 
@@ -57,7 +57,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         switch a.runModal() {
         case .alertFirstButtonReturn:
             pendingQuit = true
-            webView.evaluateJavaScript("requestSave('html')", completionHandler: nil)
+            webView.evaluateJavaScript("requestSave('docx')", completionHandler: nil)
             return .terminateLater
         case .alertSecondButtonReturn:
             return .terminateNow
@@ -88,8 +88,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
             openDocument()
         case "save":
             handleSave(ext: dict["ext"] as? String ?? "html", html: dict["html"] as? String ?? "")
-        case "saveText":
-            handleSaveText(text: dict["text"] as? String ?? "")
+        case "saveDocx":
+            handleSaveDocx(b64: dict["b64"] as? String ?? "")
         case "image":
             pickImage()
         case "pdf":
@@ -107,39 +107,52 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         let panel = NSOpenPanel()
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
-        panel.allowedContentTypes = [.html, .plainText, .rtf, mdType, docType]
+        panel.allowedContentTypes = [.html, docType, docxType]
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let ext = url.pathExtension.lowercased()
         do {
             let data = try Data(contentsOf: url)
-            if ext == "doc", data.starts(with: [0xD0, 0xCF, 0x11, 0xE0]) || data.starts(with: [0x50, 0x4B]) {
-                showAlert("Format non pris en charge",
-                          "Ce fichier .doc/.docx binaire ne peut pas être ouvert. Enregistrez-le au format HTML, RTF ou texte depuis Word, puis réessayez.")
-                return
-            }
-            if ext == "html" || ext == "htm" || ext == "doc" {
+            let isBinaryOffice = data.starts(with: [0xD0, 0xCF, 0x11, 0xE0]) || data.starts(with: [0x50, 0x4B])
+            if (ext == "docx") || (ext == "doc" && isBinaryOffice) {
+                // .docx (ZIP) ou .doc binaire Word 97 : conversion native via textutil
+                guard let html = convertWithTextutil(url: url) else {
+                    showAlert("Ouverture impossible", "Ce document ne peut pas être converti. Formats acceptés : .docx, .doc et .html.")
+                    return
+                }
+                webView.evaluateJavaScript("openHTML(\(js(html)))", completionHandler: nil)
+            } else if ext == "html" || ext == "htm" || ext == "doc" {
+                // .html ou .doc au format HTML (méthode d'export de Paper)
                 let s = String(data: data, encoding: .utf8) ?? String(decoding: data, as: UTF8.self)
-                webView.evaluateJavaScript("openHTML(\(js(s)))", completionHandler: nil)
-            } else if ext == "rtf" {
-                let attr = try NSAttributedString(
-                    data: data,
-                    options: [.documentType: NSAttributedString.DocumentType.rtf],
-                    documentAttributes: nil)
-                let htmlData = try attr.data(
-                    from: NSRange(location: 0, length: attr.length),
-                    documentAttributes: [.documentType: NSAttributedString.DocumentType.html])
-                let s = String(data: htmlData, encoding: .utf8) ?? ""
                 webView.evaluateJavaScript("openHTML(\(js(s)))", completionHandler: nil)
             } else {
-                let s = String(data: data, encoding: .utf8) ?? String(decoding: data, as: UTF8.self)
-                webView.evaluateJavaScript("openText(\(js(s)))", completionHandler: nil)
+                showAlert("Format non pris en charge", "Paper ouvre les documents .docx, .doc et .html.")
+                return
             }
             docName = url.deletingPathExtension().lastPathComponent
             dirty = false
             updateTitle()
         } catch {
-            showAlert("Ouverture impossible", error.localizedDescription)
+            showAlert("Ouverture impossible", "Ce document ne peut pas être lu. Formats acceptés : .docx, .doc et .html.")
         }
+    }
+
+    /// Convertit un document .docx/.doc binaire en HTML avec l'outil natif textutil.
+    func convertWithTextutil(url: URL) -> String? {
+        let tmp = FileManager.default.temporaryDirectory
+            .appendingPathComponent("paper-\(UUID().uuidString).html")
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/textutil")
+        process.arguments = ["-convert", "html", "-output", tmp.path, url.path]
+        do {
+            try process.run()
+            process.waitUntilExit()
+        } catch {
+            return nil
+        }
+        defer { try? FileManager.default.removeItem(at: tmp) }
+        guard process.terminationStatus == 0,
+              let html = try? String(contentsOf: tmp, encoding: .utf8) else { return nil }
+        return html
     }
 
     // MARK: - Enregistrer
@@ -178,21 +191,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         }
     }
 
-    func handleSaveText(text: String) {
+    func handleSaveDocx(b64: String) {
+        guard let data = Data(base64Encoded: b64) else {
+            showAlert("Enregistrement impossible", "Le document n'a pas pu être converti au format .docx.")
+            return
+        }
         let panel = NSSavePanel()
         panel.canCreateDirectories = true
-        panel.nameFieldStringValue = docName + ".txt"
-        panel.allowedContentTypes = [.plainText]
+        panel.nameFieldStringValue = docName + ".docx"
+        panel.allowedContentTypes = [docxType]
+        var saved = false
         if panel.runModal() == .OK, let url = panel.url {
             do {
-                try text.write(to: url, atomically: true, encoding: .utf8)
+                try data.write(to: url, options: .atomic)
                 docName = url.deletingPathExtension().lastPathComponent
                 dirty = false
                 updateTitle()
                 webView.evaluateJavaScript("afterSave()", completionHandler: nil)
+                saved = true
             } catch {
                 showAlert("Enregistrement impossible", error.localizedDescription)
             }
+        }
+        if pendingClose {
+            pendingClose = false
+            if saved { window.close() }
+        }
+        if pendingQuit {
+            pendingQuit = false
+            NSApp.reply(toApplicationShouldTerminate: saved)
         }
     }
 
@@ -267,7 +294,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         switch a.runModal() {
         case .alertFirstButtonReturn:
             pendingClose = true
-            webView.evaluateJavaScript("requestSave('html')", completionHandler: nil)
+            webView.evaluateJavaScript("requestSave('docx')", completionHandler: nil)
             return false
         case .alertSecondButtonReturn:
             return true
@@ -286,9 +313,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
     }
     @objc func doNew() { webView.evaluateJavaScript("newDoc()", completionHandler: nil) }
     @objc func doOpen() { openDocument() }
-    @objc func doSaveHTML() { webView.evaluateJavaScript("requestSave('html')", completionHandler: nil) }
+    @objc func doSaveDocx() { webView.evaluateJavaScript("requestSave('docx')", completionHandler: nil) }
     @objc func doSaveDoc() { webView.evaluateJavaScript("requestSave('doc')", completionHandler: nil) }
-    @objc func doSaveTxt() { webView.evaluateJavaScript("requestSaveText()", completionHandler: nil) }
+    @objc func doSaveHTML() { webView.evaluateJavaScript("requestSave('html')", completionHandler: nil) }
     @objc func doExportPDF() { exportPDF() }
     @objc func doPrint() { printDocument() }
     @objc func doFind() { webView.evaluateJavaScript("toggleFind(true)", completionHandler: nil) }
@@ -338,9 +365,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         fileMenu.addItem(item("Nouveau", action: #selector(doNew), key: "n"))
         fileMenu.addItem(item("Ouvrir…", action: #selector(doOpen), key: "o"))
         fileMenu.addItem(.separator())
-        fileMenu.addItem(item("Enregistrer (HTML)…", action: #selector(doSaveHTML), key: "s"))
-        fileMenu.addItem(item("Enregistrer au format Word (.doc)…", action: #selector(doSaveDoc), key: "s", shift: true))
-        fileMenu.addItem(item("Enregistrer en texte brut (.txt)…", action: #selector(doSaveTxt)))
+        fileMenu.addItem(item("Enregistrer (.docx)…", action: #selector(doSaveDocx), key: "s"))
+        fileMenu.addItem(item("Enregistrer au format Word 97 (.doc)…", action: #selector(doSaveDoc), key: "s", shift: true))
+        fileMenu.addItem(item("Enregistrer en HTML…", action: #selector(doSaveHTML)))
         fileMenu.addItem(item("Exporter en PDF…", action: #selector(doExportPDF), key: "e"))
         fileMenu.addItem(item("Imprimer…", action: #selector(doPrint), key: "p"))
         fileMenu.addItem(.separator())

@@ -44,4 +44,18 @@ Fait :
 - Collage sans mise en forme (Cmd+Alt+Maj+V) : le prochain collage insère le texte seul
 - Panneau Plan retouché (survol bleu, gras pour Titre 1)
 
-Prochaine étape : v0.4 — préférences (police par défaut, marges) et thème sombre.
+Prochaine étape : v0.4 — interface à onglets à la Apple, export .docx natif, DMG en release automatique.
+
+## v0.4 — 14 octobre 2026 — Onglets, .docx natif, releases automatiques
+
+Fait :
+- Interface à onglets façon Word, charte Apple : Accueil, Insertion, Mise en page, Affichage ; segments à pastille blanche active, boutons arrondis, accent bleu système, actions fichiers regroupées à droite de la barre d'onglets
+- Fini le fouilli : chaque onglet n'affiche que ses contrôles ; plan masqué par défaut
+- Export **.docx natif** : conteneur ZIP (stockage) et Office Open XML générés à la main en JavaScript (CRC32, styles, numérotation, tableaux, liens externes) — lisible par Word, Pages et LibreOffice
+- Ouverture des .docx via NSAttributedString
+- Formats recentrés sur le document : .docx, .doc, .html, PDF ; suppression du texte brut
+- DMG d'installation construit par build.sh (hdiutil), version pilotée par le fichier VERSION
+- Workflow GitHub Actions : à chaque version, l'app est construite sur macOS et le DMG est publié en release automatiquement
+- README complet et animé (démo SVG SMIL du fonctionnement)
+
+Prochaine étape : v0.5 — images dans l'export .docx, préférences.

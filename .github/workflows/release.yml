@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: ['VERSION', 'src/**', 'build.sh']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dmg:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construire Paper.app et le DMG
+        run: ./build.sh
+
+      - name: Publier la release avec le DMG
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(tr -d '[:space:]' < VERSION)
+          TAG="v${VERSION}"
+          NOTES_FILE=$(mktemp)
+          {
+            echo "Paper ${VERSION}"
+            echo ""
+            echo "Traitement de texte pour macOS, interface a la Apple."
+            echo ""
+            echo "Installation : ouvrez le DMG, faites glisser Paper.app dans Applications."
+            echo "Au premier lancement, si macOS bloque l'application (pas de signature de developpeur), faites clic droit puis Ouvrir."
+          } > "$NOTES_FILE"
+          if git rev-parse "$TAG" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG existant : mise a jour de la release."
+            gh release upload "$TAG" "Paper-${VERSION}.dmg" --clobber || gh release create "$TAG" "Paper-${VERSION}.dmg" --title "Paper ${VERSION}" --notes-file "$NOTES_FILE"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            gh release create "$TAG" "Paper-${VERSION}.dmg" --title "Paper ${VERSION}" --notes-file "$NOTES_FILE"
+          fi

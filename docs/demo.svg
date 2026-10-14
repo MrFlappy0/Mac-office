@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="540" viewBox="0 0 800 540" font-family="-apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <!-- Fond -->
+  <rect width="800" height="540" fill="#f5f5f7"/>
+
+  <!-- Fenetre Paper -->
+  <rect x="40" y="30" width="720" height="480" rx="14" fill="#f6f6f8" stroke="#d9d9de" stroke-width="1.5"/>
+  <!-- Barre de titre native -->
+  <rect x="40" y="30" width="720" height="34" rx="14" fill="#ececee"/>
+  <rect x="40" y="50" width="720" height="14" fill="#ececee"/>
+  <circle cx="62" cy="47" r="5.5" fill="#ff5f57"/>
+  <circle cx="82" cy="47" r="5.5" fill="#febc2e"/>
+  <circle cx="102" cy="47" r="5.5" fill="#28c840"/>
+  <text x="400" y="51" font-size="12" fill="#55555a" text-anchor="middle">Rapport — Paper</text>
+
+  <!-- Segments d'onglets -->
+  <rect x="56" y="74" width="330" height="30" rx="8" fill="#e9e9ef"/>
+  <rect x="58" y="76" width="80" height="26" rx="6" fill="#ffffff">
+    <animate attributeName="fill" values="#ffffff;#ffffff;#ffffff" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <text x="98" y="93" font-size="11.5" font-weight="600" fill="#1d1d1f" text-anchor="middle">Accueil</text>
+  <text x="172" y="93" font-size="11.5" fill="#5a5a62" text-anchor="middle">Insertion</text>
+  <text x="258" y="93" font-size="11.5" fill="#5a5a62" text-anchor="middle">Mise en page</text>
+  <text x="350" y="93" font-size="11.5" fill="#5a5a62" text-anchor="middle">Affichage</text>
+
+  <!-- Boutons de droite (strip) -->
+  <rect x="560" y="76" width="180" height="26" rx="7" fill="#e8e8ee" opacity="0.6"/>
+  <text x="650" y="93" font-size="10.5" fill="#0a66c2" font-weight="600" text-anchor="middle">Enregistrer · Word 97 · PDF</text>
+
+  <!-- Ruban -->
+  <rect x="56" y="112" width="688" height="36" rx="8" fill="#fbfbfd" stroke="#e9e9ef"/>
+  <rect x="64" y="118" width="96" height="24" rx="6" fill="#ffffff" stroke="#d5d5dc"/>
+  <text x="112" y="134" font-size="10" fill="#333" text-anchor="middle">Times · 12 pt</text>
+  <rect x="170" y="118" width="30" height="24" rx="6" fill="#ffffff" stroke="#d5d5dc"/>
+  <text x="185" y="134" font-size="11" font-weight="700" text-anchor="middle" fill="#333">G</text>
+  <rect x="204" y="118" width="30" height="24" rx="6" fill="#ffffff" stroke="#d5d5dc"/>
+  <text x="219" y="134" font-size="11" font-style="italic" text-anchor="middle" fill="#333">I</text>
+  <rect x="238" y="118" width="30" height="24" rx="6" fill="#ffffff" stroke="#d5d5dc"/>
+  <text x="253" y="134" font-size="11" text-anchor="middle" fill="#333" text-decoration="underline">S</text>
+  <!-- Pastille couleur qui pulse -->
+  <rect x="272" y="118" width="24" height="24" rx="6" fill="#ffffff" stroke="#d5d5dc"/>
+  <rect x="278" y="124" width="12" height="12" rx="3" fill="#111111">
+    <animate attributeName="fill" values="#111111;#111111;#0a66c2;#0a66c2;#111111" keyTimes="0;0.55;0.6;0.85;1" dur="9s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Page -->
+  <rect x="230" y="162" width="340" height="330" rx="3" fill="#ffffff"/>
+  <rect x="230" y="162" width="340" height="330" rx="3" fill="none" stroke="#e4e4e8"/>
+
+  <!-- Titre du document -->
+  <text x="400" y="205" font-size="19" font-weight="700" fill="#1d1d1f" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    Rapport trimestriel
+    <animate attributeName="opacity" values="0;0;1;1;1;1;0" keyTimes="0;0.08;0.14;0.7;0.9;0.95;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Lignes de texte -->
+  <text x="262" y="250" font-size="12.5" fill="#333" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    Le projet avance selon le calendrier prevu.
+    <animate attributeName="opacity" values="0;0;1;1;1;1;0" keyTimes="0;0.2;0.26;0.7;0.9;0.95;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="262" y="278" font-size="12.5" fill="#333" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    Trois jalons livres cette semaine :
+    <animate attributeName="opacity" values="0;0;1;1;1;1;0" keyTimes="0;0.32;0.38;0.7;0.9;0.95;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="284" y="306" font-size="12.5" fill="#333" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    1. Export Office Open XML
+    <animate attributeName="opacity" values="0;0;1;1;1;1;0" keyTimes="0;0.44;0.5;0.7;0.9;0.95;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="284" y="334" font-size="12.5" fill="#333" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    2. Interface a onglets
+    <animate attributeName="opacity" values="0;0;1;1;1;1;0" keyTimes="0;0.56;0.62;0.7;0.9;0.95;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <!-- Ligne surlignee en bleu gras -->
+  <text x="262" y="368" font-size="12.5" fill="#333" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    Budget : conforme aux previsions.
+    <animate attributeName="opacity" values="0;0;1;0;1;1;0" keyTimes="0;0.66;0.72;0.73;0.76;0.9;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="262" y="368" font-size="12.5" font-weight="700" fill="#0a66c2" font-family="Georgia, 'Times New Roman', serif" opacity="0">
+    Budget : conforme aux previsions.
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.73;0.78;0.88;0.9;1" dur="9s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Curseur clignotant -->
+  <rect x="400" y="400" width="2" height="18" fill="#0a66c2">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Barre d'etat -->
+  <rect x="56" y="502" width="688" height="22" rx="6" fill="#f0f0f3"/>
+  <text x="400" y="516" font-size="9.5" fill="#86868b" text-anchor="middle">9 mots · 63 caracteres · A4 - 2,5 cm</text>
+</svg>

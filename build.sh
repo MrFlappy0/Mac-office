@@ -1,9 +1,12 @@
 #!/bin/bash
-# Compile, package et signe Paper.app
+# Compile, package, sign Paper.app et construit le DMG d'installation.
+# VERSION (racine du depot) pilote le numero de version.
 set -euo pipefail
 cd "$(dirname "$0")"
 
+VERSION="$(tr -d '[:space:]' < VERSION)"
 APP="Paper.app"
+DMG="Paper-${VERSION}.dmg"
 
 # Icône (générée une seule fois)
 if [ ! -f src/Paper.icns ]; then
@@ -18,7 +21,7 @@ if [ ! -f src/Paper.icns ]; then
   rm -rf "$TMP"
 fi
 
-rm -rf "$APP"
+rm -rf "$APP" "$DMG"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 swiftc -O -o "$APP/Contents/MacOS/Paper" src/main.swift
@@ -26,6 +29,11 @@ cp src/editor.html "$APP/Contents/Resources/editor.html"
 cp src/Paper.icns "$APP/Contents/Resources/Paper.icns"
 cp src/Info.plist "$APP/Contents/Info.plist"
 
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${VERSION}" "$APP/Contents/Info.plist" >/dev/null
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${VERSION}" "$APP/Contents/Info.plist" >/dev/null
+
 codesign --force --sign - "$APP" >/dev/null
 
-echo "Build OK : $APP"
+hdiutil create -volname "Paper" -srcfolder "$APP" -ov -format UDZO "$DMG" >/dev/null
+
+echo "Build OK : $APP et $DMG (version ${VERSION})"
