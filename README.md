@@ -8,7 +8,7 @@ Interface à onglets façon Word (Accueil, Insertion, Mise en page, Affichage) s
 
 `Swift` `AppKit` `WebKit` `Onglets` `Zéro dépendance` `Open source (MIT)`
 
-[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://www.apple.com/macos) [![Version](https://img.shields.io/badge/version-0.7-0a66c2)](../../releases) [![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE) [![Release](https://img.shields.io/badge/release-DMG%20auto--publi%C3%A9-blueviolet)](../../releases)
+[![macOS](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple&logoColor=white)](https://www.apple.com/macos) [![Version](https://img.shields.io/badge/version-0.8-0a66c2)](../../releases) [![Licence](https://img.shields.io/badge/licence-MIT-green)](LICENSE) [![Release](https://img.shields.io/badge/release-DMG%20auto--publi%C3%A9-blueviolet)](../../releases)
 
 </div>
 
@@ -43,7 +43,8 @@ open Paper.app
 
 ## Philosophie
 
-- **Présentation soignée** : onglets à la Word, charte Apple (segments, accents bleus, SF), page A4 centrale, plan de navigation.
+- **Ergonomie Word 365** : titre de document éditable avec état de sauvegarde en temps réel, recherche de commandes Tell Me, ruban structuré en groupes (Presse-papiers, Police, Paragraphe, Styles rapides, Édition), règles graduées avec poignées de marges, sauts de page visuels, barre d'état complète (pages, mots, langue, zoom).
+- **Machine à états d'enregistrement** : clean / dirty / saving / error — Cmd+S, autosauvegarde 2 s, protection beforeunload, réessai après erreur. Spécification : [docs/INTERFACE.md](docs/INTERFACE.md).
 - **Coquille 100 % native** : menus, fenêtres, panneaux d'enregistrement, impression — Swift/AppKit.
 - **L'extension se choisit à l'enregistrement** : un seul bouton Enregistrer ; le panneau propose Word (.docx, par défaut), Word 97 (.doc), HTML et PDF.
 - **Zéro dépendance** : l'export .docx est écrit à la main (conteneur ZIP + Office Open XML), la lecture .docx passe par textutil.

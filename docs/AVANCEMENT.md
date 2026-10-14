@@ -103,4 +103,20 @@ Fait :
 - Documents récents dans le menu Fichier
 - Suppression de la cible docxprobe (le générateur .docx vit désormais dans l'éditeur, comme en v0.4)
 
-Prochaine étape : v0.8 — en-têtes et pieds de page, numérotation des pages, thème sombre.
+Prochaine étape : v0.8 — refonte ergonomique complète (parité Word 365).
+
+## v0.8 — 14 octobre 2026 — Refonte ergonomique complète
+
+Fait :
+- Layout trois étages : barre de titre (titre éditable au clic avec indicateur d'état de sauvegarde, recherche de commandes Tell Me centrée, barre d'accès rapide), ruban, barre d'état
+- Ruban structuré : Fichier, Accueil, Insertion, Mise en page, Révision, Affichage ; onglet Accueil en groupes libellés (Presse-papiers, Police, Paragraphe, Styles rapides, Édition) ; icônes SVG cohérentes (28 px)
+- Police : A−/A+ (pas d'incrément), casse cyclique, indice/exposant typographiques, nuanciers avec couleurs récentes et « Autres couleurs », gomme de format
+- Presse-papiers : pinceau de reproduction de mise en forme (one-shot)
+- Paragraphe : marques de format ¶, interligne, presets de marges, orientation paysage, couleur de page
+- Zone de travail : règles graduées en cm avec poignées de marge et de retrait glissables, ombre de page réaliste, sauts de page visuels avec étiquettes
+- Barre d'état : Page x sur y (estimée), compteur de mots avec statistiques détaillées, langue du correcteur, Mode Page/Web, slider de zoom 50-200 %
+- Machine à états d'enregistrement stricte (clean/dirty/saving/error) : Cmd+S intercepté, bouton Enregistrer désactivé si à jour, autosauvegarde locale 2 s, beforeunload, bouton Réessayer en cas d'erreur
+- Synchronisation bidirectionnelle du ruban (états actifs/désactivés selon le caret)
+- Design tokens CSS complets (accent #185abd, bordures #E5E7EB/#D1D5DB, rayons, espacements, ombres) — spécification dans docs/INTERFACE.md
+
+Prochaine étape : v0.9 — en-têtes et pieds de page, numérotation des pages, thème sombre.

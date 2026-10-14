@@ -288,6 +288,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate,
             pickImage()
         case "print":
             printDocument()
+        case "rename":
+            let name = (dict["name"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            if !name.isEmpty {
+                docName = name
+                updateTitle()
+            }
+        case "about":
+            doAbout()
         default:
             break
         }
@@ -364,6 +372,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate,
         panel.allowedContentTypes = [docxType, docType, .html, .pdf]
         panel.nameFieldStringValue = docName + ".docx"
         guard panel.runModal() == .OK, let url = panel.url else {
+            webView.evaluateJavaScript("saveCancelled()", completionHandler: nil)
             finishPendingSave(false)
             return
         }
@@ -381,6 +390,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate,
                 saveSucceeded(url)
             } catch {
                 showAlert("Enregistrement impossible", error.localizedDescription)
+                webView.evaluateJavaScript("saveError()", completionHandler: nil)
                 finishPendingSave(false)
             }
         case "doc":
@@ -393,6 +403,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate,
                 saveSucceeded(url)
             } catch {
                 showAlert("Enregistrement impossible", error.localizedDescription)
+                webView.evaluateJavaScript("saveError()", completionHandler: nil)
                 finishPendingSave(false)
             }
         case "pdf":
@@ -406,6 +417,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate,
                     self.saveSucceeded(url)
                 } catch {
                     self.showAlert("Enregistrement impossible", error.localizedDescription)
+                    self.webView.evaluateJavaScript("saveError()", completionHandler: nil)
                     self.finishPendingSave(false)
                 }
             }
@@ -417,6 +429,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate,
                 saveSucceeded(url)
             } catch {
                 showAlert("Enregistrement impossible", error.localizedDescription)
+                webView.evaluateJavaScript("saveError()", completionHandler: nil)
                 finishPendingSave(false)
             }
         }
