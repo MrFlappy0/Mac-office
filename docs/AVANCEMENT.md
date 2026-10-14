@@ -58,4 +58,18 @@ Fait :
 - Workflow GitHub Actions : à chaque version, l'app est construite sur macOS et le DMG est publié en release automatiquement
 - README complet et animé (démo SVG SMIL du fonctionnement)
 
-Prochaine étape : v0.5 — images dans l'export .docx, préférences.
+Prochaine étape : v0.5 — refonte 100 % Swift natif, extension choisie à l'enregistrement, menu Réglages.
+
+## v0.5 — 14 octobre 2026 — Refonte complète en Swift natif
+
+Fait :
+- Application entièrement réécrite en Swift/AppKit : plus de WebView ni d'HTML ; NSTextView riche et NSDocument, comme les applications système (consommation et réactivité améliorées)
+- Structure de projet standard du marché : Swift Package Manager, cible PaperCore (formats, export .docx, styles, ZIP) + cible Paper (application) + cible docxprobe (vérification CI)
+- L'extension est choisie uniquement au moment de l'enregistrement (panneau natif) : suppression de tous les boutons de format de l'interface, par défaut Word (.docx) ; .doc, .rtf, .html et .txt proposés
+- Menu Réglages (Cmd+,) : police et taille par défaut, marges, correcteur orthographique, plan du document
+- Plan de navigation natif (NSTableView), barre d'état mots/caractères/temps de lecture, panneau de symboles
+- Recherche native NSTextFinder (barre incrémentale), panneau Fontes et Couleurs système
+- Correction du build DMG sur GitHub : l'icône est générée une fois et committée (Resources/Paper.icns) — la génération via AppKit NSImage échoue sur les runners sans serveur d'affichage ; build basé sur SwiftPM, vérification du .docx en CI (unzip + docxprobe)
+- Le générateur .docx a été porté en Swift et validé : ZIP intègre (unzip -t), listes et titres relus par textutil
+
+Prochaine étape : v0.6 — thème sombre, pagination à l'écran.

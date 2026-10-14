@@ -1,6 +1,5 @@
+.build/
 *.app
 *.dmg
 .DS_Store
 build/
-src/*.icns
-.test-docx.b64

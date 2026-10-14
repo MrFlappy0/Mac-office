@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths: ['VERSION', 'src/**', 'build.sh']
+    paths: ['VERSION', 'Sources/**', 'Resources/**', 'Package.swift', 'build.sh']
   workflow_dispatch:
 
 permissions:
@@ -18,26 +18,30 @@ jobs:
       - name: Construire Paper.app et le DMG
         run: ./build.sh
 
+      - name: Vérifier le document .docx de test
+        run: |
+          .build/release/docxprobe /tmp/paper-test.docx
+          unzip -t /tmp/paper-test.docx
+
       - name: Publier la release avec le DMG
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(tr -d '[:space:]' < VERSION)
           TAG="v${VERSION}"
-          NOTES_FILE=$(mktemp)
+          NOTES=$(mktemp)
           {
-            echo "Paper ${VERSION}"
+            echo "Paper ${VERSION} — traitement de texte 100 % natif pour macOS."
             echo ""
-            echo "Traitement de texte pour macOS, interface a la Apple."
+            echo "Nouveautés : refonte complète en Swift natif (AppKit), extension choisie à l'enregistrement (défaut Word .docx), menu Réglages, plan de navigation, pipeline Swift Package Manager."
             echo ""
-            echo "Installation : ouvrez le DMG, faites glisser Paper.app dans Applications."
-            echo "Au premier lancement, si macOS bloque l'application (pas de signature de developpeur), faites clic droit puis Ouvrir."
-          } > "$NOTES_FILE"
-          if git rev-parse "$TAG" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG existant : mise a jour de la release."
-            gh release upload "$TAG" "Paper-${VERSION}.dmg" --clobber || gh release create "$TAG" "Paper-${VERSION}.dmg" --title "Paper ${VERSION}" --notes-file "$NOTES_FILE"
+            echo "Installation : ouvrez le DMG, faites glisser Paper.app dans Applications. Au premier lancement, si macOS bloque l'application (absence de signature de développeur), faites clic droit puis Ouvrir."
+          } > "$NOTES"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "Paper-${VERSION}.dmg" --clobber || \
+              gh release create "$TAG" "Paper-${VERSION}.dmg" --title "Paper ${VERSION}" --notes-file "$NOTES"
           else
             git tag "$TAG"
             git push origin "$TAG"
-            gh release create "$TAG" "Paper-${VERSION}.dmg" --title "Paper ${VERSION}" --notes-file "$NOTES_FILE"
+            gh release create "$TAG" "Paper-${VERSION}.dmg" --title "Paper ${VERSION}" --notes-file "$NOTES"
           fi
