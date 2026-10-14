@@ -162,7 +162,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
                 docName = url.deletingPathExtension().lastPathComponent
                 dirty = false
                 updateTitle()
-                webView.evaluateJavaScript("dirty = false", completionHandler: nil)
+                webView.evaluateJavaScript("afterSave()", completionHandler: nil)
                 saved = true
             } catch {
                 showAlert("Enregistrement impossible", error.localizedDescription)
@@ -189,7 +189,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
                 docName = url.deletingPathExtension().lastPathComponent
                 dirty = false
                 updateTitle()
-                webView.evaluateJavaScript("dirty = false", completionHandler: nil)
+                webView.evaluateJavaScript("afterSave()", completionHandler: nil)
             } catch {
                 showAlert("Enregistrement impossible", error.localizedDescription)
             }
@@ -280,8 +280,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
 
     @objc func doAbout() {
         let a = NSAlert()
-        a.messageText = "MinWord 1.0"
-        a.informativeText = "Traitement de texte pour macOS : mise en forme, styles, listes, tableaux, images, liens, recherche/remplacement, export Word (.doc), HTML, PDF et texte brut."
+        a.messageText = "Paper 1.0"
+        a.informativeText = "Traitement de texte pour macOS : mise en forme, styles, plan de navigation du document, tableaux éditables, images, liens, recherche/remplacement, sauvegarde automatique, export Word (.doc), HTML, PDF et texte brut."
         a.runModal()
     }
     @objc func doNew() { webView.evaluateJavaScript("newDoc()", completionHandler: nil) }
@@ -298,6 +298,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
     @objc func doItalic() { webView.evaluateJavaScript("cmd('italic')", completionHandler: nil) }
     @objc func doUnderline() { webView.evaluateJavaScript("cmd('underline')", completionHandler: nil) }
     @objc func doStrike() { webView.evaluateJavaScript("cmd('strikeThrough')", completionHandler: nil) }
+    @objc func doOutline() { webView.evaluateJavaScript("toggleOutline()", completionHandler: nil) }
+    @objc func doZoomIn() { webView.evaluateJavaScript("zoomIn()", completionHandler: nil) }
+    @objc func doZoomOut() { webView.evaluateJavaScript("zoomOut()", completionHandler: nil) }
+    @objc func doZoomReset() { webView.evaluateJavaScript("zoomReset()", completionHandler: nil) }
+    @objc func doSymbols() { webView.evaluateJavaScript("openDialog('symbols')", completionHandler: nil) }
+    @objc func doShortcuts() { webView.evaluateJavaScript("openDialog('shortcuts')", completionHandler: nil) }
 
     // MARK: - Barre de menus
 
@@ -317,11 +323,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
 
         let appItem = NSMenuItem()
         let appMenu = NSMenu()
-        appMenu.addItem(item("À propos de MinWord", action: #selector(doAbout)))
+        appMenu.addItem(item("À propos de Paper", action: #selector(doAbout)))
         appMenu.addItem(.separator())
-        appMenu.addItem(std("Masquer MinWord", action: Selector("hide:"), key: "h"))
+        appMenu.addItem(std("Masquer Paper", action: Selector("hide:"), key: "h"))
         appMenu.addItem(.separator())
-        appMenu.addItem(std("Quitter MinWord", action: Selector("terminate:"), key: "q"))
+        appMenu.addItem(std("Quitter Paper", action: Selector("terminate:"), key: "q"))
         appItem.submenu = appMenu
         mainMenu.addItem(appItem)
 
@@ -360,8 +366,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         fmtMenu.addItem(item("Italique", action: #selector(doItalic), key: "i"))
         fmtMenu.addItem(item("Souligné", action: #selector(doUnderline), key: "u"))
         fmtMenu.addItem(item("Barré", action: #selector(doStrike)))
+        fmtMenu.addItem(.separator())
+        fmtMenu.addItem(item("Caractères spéciaux…", action: #selector(doSymbols)))
         fmtItem.submenu = fmtMenu
         mainMenu.addItem(fmtItem)
+
+        let viewItem = NSMenuItem()
+        let viewMenu = NSMenu(title: "Affichage")
+        viewMenu.addItem(item("Plan du document", action: #selector(doOutline)))
+        viewMenu.addItem(.separator())
+        viewMenu.addItem(item("Zoom avant", action: #selector(doZoomIn), key: "+"))
+        viewMenu.addItem(item("Zoom arrière", action: #selector(doZoomOut), key: "-"))
+        viewMenu.addItem(item("Zoom 100 %", action: #selector(doZoomReset), key: "0"))
+        viewItem.submenu = viewMenu
+        mainMenu.addItem(viewItem)
 
         let winItem = NSMenuItem()
         let winMenu = NSMenu(title: "Fenêtre")
@@ -369,6 +387,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKSc
         winMenu.addItem(std("Zoom", action: Selector("performZoom:")))
         winItem.submenu = winMenu
         mainMenu.addItem(winItem)
+
+        let helpItem = NSMenuItem()
+        let helpMenu = NSMenu(title: "Aide")
+        helpMenu.addItem(item("Raccourcis clavier…", action: #selector(doShortcuts)))
+        helpItem.submenu = helpMenu
+        mainMenu.addItem(helpItem)
 
         NSApp.mainMenu = mainMenu
     }

@@ -5,19 +5,21 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>fr</string>
 	<key>CFBundleExecutable</key>
-	<string>MinWord</string>
+	<string>Paper</string>
+	<key>CFBundleIconFile</key>
+	<string>Paper.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>local.theo.minword</string>
+	<string>local.theo.paper</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>MinWord</string>
+	<string>Paper</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>

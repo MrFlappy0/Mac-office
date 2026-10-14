@@ -2,37 +2,72 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>MinWord</title>
+<title>Paper</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
-body { font-family: -apple-system, "Helvetica Neue", sans-serif; background: #ececf1; display: flex; flex-direction: column; overflow: hidden; }
+body { font-family: -apple-system, "Helvetica Neue", sans-serif; background: #e8e9ed; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-#toolbar { background: #f7f7fa; border-bottom: 1px solid #d8d8de; padding: 6px 10px; display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
-#toolbar .group { display: flex; gap: 2px; align-items: center; padding-right: 8px; margin-right: 4px; border-right: 1px solid #ddd; }
+/* ---- Barre de titre ---- */
+#titlebar { background: linear-gradient(180deg, #3468b8, #2b579a); color: #fff; min-height: 44px; display: flex; align-items: center; gap: 6px; padding: 6px 12px; flex-wrap: wrap; }
+#appname { font-weight: 700; font-size: 15px; letter-spacing: .4px; margin-right: 14px; display: flex; align-items: center; gap: 7px; }
+#appname .dot { width: 9px; height: 9px; border-radius: 50%; background: #ffd54a; display: inline-block; }
+.tbtn { color: #fff; background: rgba(255,255,255,.13); border: none; border-radius: 6px; height: 28px; padding: 0 11px; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.tbtn:hover { background: rgba(255,255,255,.28); }
+.tbtn svg { display: block; }
+.tbtn.on { background: rgba(255,255,255,.4); }
+.spacer { flex: 1; }
+
+/* ---- Ruban de mise en forme ---- */
+#toolbar { background: #fbfbfd; border-bottom: 1px solid #d5d5dd; padding: 6px 10px; display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+#toolbar .group { display: flex; gap: 2px; align-items: center; padding-right: 8px; margin-right: 4px; border-right: 1px solid #e2e2e8; }
 #toolbar .group:last-child { border-right: none; }
-#toolbar button { min-width: 28px; height: 26px; padding: 0 7px; background: #fff; border: 1px solid #c8c8ce; border-radius: 5px; font-size: 12px; color: #222; cursor: pointer; line-height: 1; }
-#toolbar button:hover { background: #e8e8ee; }
-#toolbar button.active { background: #d6e4ff; border-color: #7a9fdd; }
-#toolbar select { height: 26px; border: 1px solid #c8c8ce; border-radius: 5px; background: #fff; font-size: 12px; padding: 0 4px; max-width: 140px; }
+#toolbar button { min-width: 28px; height: 26px; padding: 0 7px; background: #fff; border: 1px solid #cfcfd8; border-radius: 6px; font-size: 12px; color: #333; cursor: pointer; line-height: 1; }
+#toolbar button:hover { background: #ecedf3; border-color: #b9b9c6; }
+#toolbar button.active { background: #d6e4ff; border-color: #7a9fdd; color: #1a3f77; }
+#toolbar select { height: 26px; border: 1px solid #cfcfd8; border-radius: 6px; background: #fff; font-size: 12px; padding: 0 4px; max-width: 140px; color: #333; }
 #toolbar button svg { display: block; margin: 0 auto; }
-label.color-well { position: relative; overflow: hidden; width: 28px; height: 26px; background: #fff; border: 1px solid #c8c8ce; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-label.color-well input { position: absolute; left: -30px; top: -30px; }
-.swatch { width: 14px; height: 14px; border: 1px solid #999; border-radius: 3px; }
 
+label.color-well { position: relative; overflow: hidden; width: 28px; height: 26px; background: #fff; border: 1px solid #cfcfd8; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+label.color-well:hover { background: #ecedf3; }
+label.color-well input { position: absolute; left: -30px; top: -30px; }
+.swatch { width: 14px; height: 14px; border: 1px solid #999; border-radius: 4px; }
+
+/* ---- Barre contextuelle tableaux ---- */
+#tablebar { display: none; gap: 4px; padding: 5px 10px; background: #eef3fc; border-bottom: 1px solid #cdd8ec; align-items: center; }
+#tablebar.visible { display: flex; }
+#tablebar span.lbl { font-size: 11.5px; color: #2b579a; font-weight: 600; margin-right: 6px; }
+#tablebar button { height: 24px; padding: 0 9px; font-size: 12px; border: 1px solid #b9c6e0; border-radius: 5px; background: #fff; color: #2b579a; cursor: pointer; }
+#tablebar button:hover { background: #dce6f8; }
+#tablebar button.danger { color: #a33; border-color: #ddb9b9; }
+#tablebar button.danger:hover { background: #f7dede; }
+
+/* ---- Recherche ---- */
 #findbar { display: none; gap: 6px; padding: 6px 10px; background: #fff8d6; border-bottom: 1px solid #e3d9a8; align-items: center; }
 #findbar.visible { display: flex; }
-#findbar input { height: 24px; border: 1px solid #c8c8ce; border-radius: 5px; padding: 0 6px; width: 170px; font-size: 12px; }
-#findbar button { height: 24px; padding: 0 8px; font-size: 12px; border: 1px solid #c8c8ce; border-radius: 5px; background: #fff; cursor: pointer; }
+#findbar input { height: 24px; border: 1px solid #c8c8ce; border-radius: 6px; padding: 0 6px; width: 170px; font-size: 12px; }
+#findbar button { height: 24px; padding: 0 9px; font-size: 12px; border: 1px solid #c8c8ce; border-radius: 6px; background: #fff; cursor: pointer; }
+
+/* ---- Zone principale ---- */
+#mainrow { flex: 1; display: flex; min-height: 0; }
+#sidebar { width: 232px; background: #f5f5f8; border-right: 1px solid #dcdce2; overflow-y: auto; padding: 10px 0 16px; }
+body.no-outline #sidebar { display: none; }
+.sb-title { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: #888; padding: 4px 14px 8px; font-weight: 700; }
+.ol-item { padding: 5px 14px; font-size: 12.5px; color: #333; cursor: pointer; border-left: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ol-item:hover { background: #e9e9f0; border-left-color: #2b579a; }
+.ol-h1 { font-weight: 600; }
+.ol-h2 { padding-left: 26px; }
+.ol-h3 { padding-left: 38px; color: #666; }
+.ol-empty { padding: 8px 14px; font-size: 12px; color: #999; line-height: 1.4; }
 
 #scroll { flex: 1; overflow: auto; padding: 26px 0 40px; }
-#page { background: #fff; width: 794px; min-height: 1000px; margin: 0 auto; padding: 94px 94px; box-shadow: 0 2px 14px rgba(0,0,0,.22); outline: none; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; color: #111; }
+#page { background: #fff; width: 794px; min-height: 1000px; margin: 0 auto; padding: 94px 94px; box-shadow: 0 3px 18px rgba(0,0,0,.25); outline: none; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; color: #111; }
 #page p { margin: 0 0 10px; }
-#page h1 { font-size: 28pt; margin: 14pt 0 8pt; line-height: 1.2; }
-#page h2 { font-size: 20pt; margin: 12pt 0 7pt; line-height: 1.2; }
+#page h1 { font-size: 28pt; margin: 14pt 0 8pt; line-height: 1.2; color: #1a3f6e; }
+#page h2 { font-size: 20pt; margin: 12pt 0 7pt; line-height: 1.2; color: #2b579a; }
 #page h3 { font-size: 15pt; margin: 10pt 0 6pt; line-height: 1.2; }
-#page blockquote { border-left: 3px solid #aaa; padding-left: 12px; color: #444; margin: 8px 0; }
-#page pre { font-family: Menlo, monospace; background: #f4f4f4; padding: 8px; border-radius: 4px; margin: 8px 0; white-space: pre-wrap; }
+#page blockquote { border-left: 3px solid #2b579a; background: #f4f6fa; padding: 8px 12px; color: #444; margin: 8px 0; }
+#page pre { font-family: Menlo, monospace; background: #f4f4f6; padding: 8px; border-radius: 5px; margin: 8px 0; white-space: pre-wrap; }
 #page ul, #page ol { padding-left: 26px; margin: 0 0 10px; }
 #page table { border-collapse: collapse; margin: 10px 0; width: 100%; }
 #page td, #page th { border: 1px solid #666; padding: 5px 8px; min-width: 40px; }
@@ -40,30 +75,52 @@ label.color-well input { position: absolute; left: -30px; top: -30px; }
 #page hr { border: none; border-top: 1px solid #999; margin: 14px 0; }
 #page a { color: #0b57d0; }
 
-#statusbar { background: #f7f7fa; border-top: 1px solid #d8d8de; padding: 4px 12px; font-size: 11.5px; color: #555; display: flex; gap: 18px; align-items: center; }
-#statusbar select { height: 20px; font-size: 11.5px; border: 1px solid #c8c8ce; border-radius: 4px; background: #fff; }
+/* ---- Barre d'état ---- */
+#statusbar { background: #fbfbfd; border-top: 1px solid #d5d5dd; padding: 4px 12px; font-size: 11.5px; color: #555; display: flex; gap: 16px; align-items: center; }
+#statusbar select { height: 20px; font-size: 11.5px; border: 1px solid #cfcfd8; border-radius: 4px; background: #fff; }
+#statusbar .info { color: #888; }
 
+/* ---- Dialogs ---- */
+#overlay { position: fixed; inset: 0; background: rgba(20,25,40,.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+#overlay.hidden { display: none; }
+#dialog { background: #fff; border-radius: 12px; padding: 18px 20px; width: 480px; max-width: 90vw; max-height: 70vh; overflow: auto; box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+#dialog h3 { font-size: 15px; margin-bottom: 12px; color: #222; }
+.sym-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.sym { height: 34px; font-size: 16px; border: 1px solid #d5d5dd; border-radius: 6px; background: #fff; cursor: pointer; }
+.sym:hover { background: #e8f0fe; border-color: #7a9fdd; }
+.keys { border-collapse: collapse; width: 100%; }
+.keys td { padding: 4px 10px 4px 0; font-size: 12.5px; color: #333; }
+.keys td:first-child { font-weight: 600; color: #2b579a; white-space: nowrap; width: 130px; }
+.dlg-close { margin-top: 14px; height: 28px; padding: 0 16px; font-size: 12.5px; border: 1px solid #cfcfd8; border-radius: 6px; background: #f4f5f9; cursor: pointer; }
+.dlg-close:hover { background: #e8e9ef; }
+
+/* ---- Mode export PDF ---- */
 body.pdf-mode { background: #fff; }
-body.pdf-mode #toolbar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
+body.pdf-mode #titlebar, body.pdf-mode #toolbar, body.pdf-mode #tablebar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
+body.pdf-mode #mainrow { display: block; overflow: visible; }
+body.pdf-mode #sidebar { display: none; }
 body.pdf-mode #scroll { overflow: visible; padding: 0; }
 body.pdf-mode #page { box-shadow: none; }
 </style>
 </head>
 <body>
 
+<div id="titlebar">
+  <span id="appname"><span class="dot"></span>Paper</span>
+  <button class="tbtn" title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
+  <button class="tbtn" title="Ouvrir (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
+  <button class="tbtn" title="Enregistrer en HTML (Cmd+S)" onclick="requestSave('html')">Enregistrer</button>
+  <button class="tbtn" title="Enregistrer au format Word (.doc) (Cmd+Maj+S)" onclick="requestSave('doc')">Word</button>
+  <button class="tbtn" title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
+  <button class="tbtn" title="Imprimer (Cmd+P)" onclick="native({type:'print'})">Imprimer</button>
+  <span class="spacer"></span>
+  <button class="tbtn" title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
+  <button class="tbtn" title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+  <button class="tbtn" title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
+  <button class="tbtn" id="outlineBtn" title="Afficher ou masquer le plan du document" onclick="toggleOutline()">Plan</button>
+</div>
+
 <div id="toolbar">
-  <div class="group">
-    <button title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
-    <button title="Ouvrir (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
-    <button title="Enregistrer en HTML (Cmd+S)" onclick="requestSave('html')">Enregistrer</button>
-    <button title="Enregistrer au format Word (.doc)" onclick="requestSave('doc')">Word (.doc)</button>
-    <button title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
-    <button title="Imprimer (Cmd+P)" onclick="native({type:'print'})">Imprimer</button>
-  </div>
-  <div class="group">
-    <button title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
-    <button title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
-  </div>
   <div class="group">
     <select id="blockSel" title="Style de paragraphe" onchange="restoreSelection(); applyBlock(this.value)">
       <option value="p">Paragraphe</option>
@@ -135,11 +192,20 @@ body.pdf-mode #page { box-shadow: none; }
     <button title="Insérer un tableau" onclick="insertTable()">Tableau</button>
     <button title="Ligne horizontale" onclick="cmd('insertHorizontalRule')">Ligne</button>
     <button title="Insérer la date du jour" onclick="insertDate()">Date</button>
+    <button title="Caractères spéciaux" onclick="openDialog('symbols')">Symboles</button>
     <button title="Effacer la mise en forme" onclick="cmd('removeFormat')">Effacer</button>
   </div>
-  <div class="group">
-    <button title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
-  </div>
+</div>
+
+<div id="tablebar">
+  <span class="lbl">Tableau</span>
+  <button onclick="tableAddRow(true)">Ligne au-dessus</button>
+  <button onclick="tableAddRow(false)">Ligne en dessous</button>
+  <button onclick="tableAddCol(true)">Colonne avant</button>
+  <button onclick="tableAddCol(false)">Colonne après</button>
+  <button class="danger" onclick="tableDelRow()">Suppr. ligne</button>
+  <button class="danger" onclick="tableDelCol()">Suppr. colonne</button>
+  <button class="danger" onclick="tableDelTable()">Suppr. tableau</button>
 </div>
 
 <div id="findbar">
@@ -151,14 +217,22 @@ body.pdf-mode #page { box-shadow: none; }
   <button onclick="toggleFind(false)">Fermer</button>
 </div>
 
-<div id="scroll">
-  <div id="page" contenteditable="true" spellcheck="true"><p><br></p></div>
+<div id="mainrow">
+  <div id="sidebar">
+    <div class="sb-title">Plan du document</div>
+    <div id="outline"></div>
+  </div>
+  <div id="scroll">
+    <div id="page" contenteditable="true" spellcheck="true"><p><br></p></div>
+  </div>
 </div>
 
 <div id="statusbar">
   <span id="countWords">0 mot</span>
   <span id="countChars">0 caractère</span>
+  <span id="readTime"></span>
   <span style="flex:1"></span>
+  <span class="info">A4 · Marges 2,5 cm</span>
   <span>Zoom</span>
   <select id="zoomSel" onchange="setZoom(this.value)">
     <option value="0.75">75 %</option>
@@ -169,12 +243,15 @@ body.pdf-mode #page { box-shadow: none; }
   </select>
 </div>
 
+<div id="overlay" class="hidden"><div id="dialog"></div></div>
+
 <script>
 var page = document.getElementById('page');
 var findbar = document.getElementById('findbar');
 var savedRange = null;
 var dirty = false;
 var savedZoom = '1';
+var ZOOMS = [0.75, 1, 1.25, 1.5, 2];
 
 function native(obj) {
   if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.app) {
@@ -190,7 +267,9 @@ function cmd(c, v) {
 
 function refresh() {
   syncToolbar();
+  syncTableBar();
   refreshCounts();
+  buildOutline();
 }
 
 document.addEventListener('selectionchange', function () {
@@ -199,9 +278,10 @@ document.addEventListener('selectionchange', function () {
     savedRange = s.getRangeAt(0).cloneRange();
   }
   syncToolbar();
+  syncTableBar();
 });
 
-document.querySelectorAll('#toolbar button').forEach(function (b) {
+document.querySelectorAll('#toolbar button, #tablebar button').forEach(function (b) {
   b.addEventListener('mousedown', function (e) { e.preventDefault(); });
 });
 
@@ -229,12 +309,17 @@ function syncToolbar() {
   if (sel.querySelector('option[value="' + cur + '"]')) sel.value = cur;
 }
 
+/* ---- Compteurs ---- */
+
 function refreshCounts() {
   var t = page.innerText.replace(/\u00a0/g, ' ').trim();
   var words = t ? t.split(/\s+/).length : 0;
   document.getElementById('countWords').textContent = words + (words > 1 ? ' mots' : ' mot');
   document.getElementById('countChars').textContent = t.length + (t.length > 1 ? ' caractères' : ' caractère');
+  document.getElementById('readTime').textContent = words > 150 ? 'environ ' + Math.ceil(words / 200) + ' min de lecture' : '';
 }
+
+/* ---- État modifié ---- */
 
 function setDirty(d) {
   if (d === dirty) return;
@@ -247,10 +332,16 @@ page.addEventListener('input', function () {
   refresh();
 });
 
+function afterSave() {
+  dirty = false;
+  try { localStorage.removeItem('paper.autosave'); } catch (e) {}
+}
+
 function newDoc() {
   if (dirty && !window.confirm('Le document contient des modifications non enregistrées. Continuer sans enregistrer ?')) return;
   page.innerHTML = '<p><br></p>';
   dirty = false;
+  try { localStorage.removeItem('paper.autosave'); } catch (e) {}
   native({ type: 'new' });
   refresh();
 }
@@ -259,6 +350,7 @@ function openHTML(html) {
   var doc = new DOMParser().parseFromString(html, 'text/html');
   page.innerHTML = doc.body.innerHTML || '<p><br></p>';
   dirty = false;
+  try { localStorage.removeItem('paper.autosave'); } catch (e) {}
   refresh();
 }
 
@@ -271,8 +363,29 @@ function openText(text) {
   }
   page.innerHTML = html || '<p><br></p>';
   dirty = false;
+  try { localStorage.removeItem('paper.autosave'); } catch (e) {}
   refresh();
 }
+
+/* ---- Sauvegarde automatique ---- */
+
+setInterval(function () {
+  try { if (dirty) localStorage.setItem('paper.autosave', page.innerHTML); } catch (e) {}
+}, 4000);
+
+try {
+  var backup = localStorage.getItem('paper.autosave');
+  if (backup && backup.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim() !== '') {
+    if (window.confirm('Une version non enregistrée de votre dernier document a été retrouvée. Voulez-vous la restaurer ?')) {
+      page.innerHTML = backup;
+      setDirty(true);
+    } else {
+      localStorage.removeItem('paper.autosave');
+    }
+  }
+} catch (e) {}
+
+/* ---- Insertions ---- */
 
 function insertImage(dataUrl) {
   restoreSelection();
@@ -328,6 +441,118 @@ function insertDate() {
   refresh();
 }
 
+function insertSymbol(ch) {
+  restoreSelection();
+  document.execCommand('insertText', false, ch);
+  setDirty(true);
+  refresh();
+}
+
+/* ---- Édition de tableaux ---- */
+
+function caretCell() {
+  var s = window.getSelection();
+  if (!s.rangeCount) return null;
+  var n = s.getRangeAt(0).startContainer;
+  var el = (n.nodeType === 1) ? n : n.parentNode;
+  if (!el || !el.closest) return null;
+  return el.closest('#page td, #page th');
+}
+
+function caretTable() {
+  var cell = caretCell();
+  return cell ? cell.closest('table') : null;
+}
+
+function syncTableBar() {
+  document.getElementById('tablebar').classList.toggle('visible', !!caretTable());
+}
+
+function tableAddRow(above) {
+  var t = caretTable();
+  if (!t) return;
+  var cell = caretCell();
+  var target = cell ? (above ? cell.parentElement.rowIndex : cell.parentElement.rowIndex + 1) : t.rows.length;
+  var cols = 0;
+  for (var i = 0; i < t.rows.length; i++) cols = Math.max(cols, t.rows[i].cells.length);
+  var nr = t.insertRow(target);
+  for (var j = 0; j < cols; j++) nr.insertCell(-1).innerHTML = '&nbsp;';
+  setDirty(true);
+  refresh();
+}
+
+function tableAddCol(before) {
+  var t = caretTable();
+  if (!t) return;
+  var cell = caretCell();
+  var target = cell ? (before ? cell.cellIndex : cell.cellIndex + 1) : t.rows[0].cells.length;
+  for (var i = 0; i < t.rows.length; i++) {
+    t.rows[i].insertCell(target).innerHTML = '&nbsp;';
+  }
+  setDirty(true);
+  refresh();
+}
+
+function tableDelRow() {
+  var t = caretTable();
+  var cell = caretCell();
+  if (!t || !cell) return;
+  cell.parentElement.remove();
+  if (t.rows.length === 0) t.remove();
+  setDirty(true);
+  refresh();
+}
+
+function tableDelCol() {
+  var t = caretTable();
+  var cell = caretCell();
+  if (!t || !cell) return;
+  var idx = cell.cellIndex;
+  for (var i = 0; i < t.rows.length; i++) {
+    if (t.rows[i].cells[idx]) t.rows[i].deleteCell(idx);
+  }
+  if (t.rows[0] && t.rows[0].cells.length === 0) t.remove();
+  setDirty(true);
+  refresh();
+}
+
+function tableDelTable() {
+  var t = caretTable();
+  if (!t) return;
+  t.remove();
+  if (!page.firstChild) page.innerHTML = '<p><br></p>';
+  setDirty(true);
+  refresh();
+}
+
+/* ---- Plan du document ---- */
+
+function buildOutline() {
+  var out = document.getElementById('outline');
+  var heads = page.querySelectorAll('h1, h2, h3');
+  var html = '';
+  for (var i = 0; i < heads.length; i++) {
+    var h = heads[i];
+    var txt = h.textContent.trim() || '(sans titre)';
+    html += '<div class="ol-item ol-' + h.tagName.toLowerCase() + '" data-idx="' + i + '" title="' + escapeAttr(txt) + '">' + escapeHtml(txt) + '</div>';
+  }
+  out.innerHTML = html || '<div class="ol-empty">Aucun titre pour le moment. Utilisez les styles Titre 1 à 3 pour structurer votre document, ils apparaîtront ici.</div>';
+  out.querySelectorAll('.ol-item').forEach(function (el) {
+    el.onclick = function () {
+      var h = page.querySelectorAll('h1, h2, h3')[parseInt(el.getAttribute('data-idx'), 10)];
+      if (h) h.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+  });
+}
+
+function toggleOutline() {
+  document.body.classList.toggle('no-outline');
+  document.getElementById('outlineBtn').classList.toggle('on', !document.body.classList.contains('no-outline'));
+  buildOutline();
+}
+
+/* ---- Mise en forme ---- */
+
 function applyBlock(v) {
   cmd('formatBlock', '<' + v + '>');
 }
@@ -341,7 +566,7 @@ function setFontSize(size) {
     var span = document.createElement('span');
     span.style.fontSize = size + 'pt';
     while (f.firstChild) span.appendChild(f.firstChild);
-    f.parentNode.replaceChild(span, f);
+    f.parentNode.replaceWith(span, f);
   }
   setDirty(true);
 }
@@ -361,6 +586,8 @@ function applyHilite(v) {
   refresh();
 }
 
+/* ---- Enregistrement ---- */
+
 function requestSave(ext) {
   native({ type: 'save', ext: ext, html: page.innerHTML });
 }
@@ -368,6 +595,8 @@ function requestSave(ext) {
 function requestSaveText() {
   native({ type: 'saveText', text: page.innerText });
 }
+
+/* ---- Recherche et remplacement ---- */
 
 function toggleFind(show) {
   findbar.classList.toggle('visible', show);
@@ -425,6 +654,82 @@ function replaceAll() {
   refresh();
 }
 
+/* ---- Zoom ---- */
+
+function setZoom(z) {
+  document.body.style.zoom = z;
+  var sel = document.getElementById('zoomSel');
+  var v = String(z);
+  if (sel.querySelector('option[value="' + v + '"]')) sel.value = v;
+}
+
+function zoomIndex() {
+  return ZOOMS.indexOf(parseFloat(document.body.style.zoom || '1'));
+}
+
+function zoomIn() {
+  var i = zoomIndex();
+  if (i > -1 && i < ZOOMS.length - 1) setZoom(ZOOMS[i + 1]);
+}
+
+function zoomOut() {
+  var i = zoomIndex();
+  if (i > 0) setZoom(ZOOMS[i - 1]);
+}
+
+function zoomReset() {
+  setZoom(1);
+}
+
+/* ---- Dialogs ---- */
+
+var SYMBOLS = ['«','»','“','”','‘','’','—','–','…','€','œ','Œ','æ','Æ','©','®','™','°','±','×','÷','²','³','½','¼','¾','§','¶','†','•','¡','¿','Á','À','Â','Ä','É','È','Ê','Ë','Í','Ì','Î','Ï','Ó','Ò','Ô','Ö','Ú','Ù','Û','Ü','Ç','Ÿ'];
+
+function openDialog(kind) {
+  var d = document.getElementById('dialog');
+  var html = '';
+  if (kind === 'symbols') {
+    html += '<h3>Caractères spéciaux</h3><div class="sym-grid">';
+    SYMBOLS.forEach(function (c) {
+      html += '<button class="sym" title="Insérer ' + escapeAttr(c) + '" onclick="insertSymbol(\'' + c + '\')">' + escapeHtml(c) + '</button>';
+    });
+    html += '</div>';
+  } else if (kind === 'shortcuts') {
+    html += '<h3>Raccourcis clavier</h3><table class="keys">'
+      + '<tr><td>Cmd+N</td><td>Nouveau document</td></tr>'
+      + '<tr><td>Cmd+O</td><td>Ouvrir (HTML, RTF, TXT, MD)</td></tr>'
+      + '<tr><td>Cmd+S</td><td>Enregistrer en HTML</td></tr>'
+      + '<tr><td>Cmd+Maj+S</td><td>Enregistrer au format Word (.doc)</td></tr>'
+      + '<tr><td>Cmd+E</td><td>Exporter en PDF</td></tr>'
+      + '<tr><td>Cmd+P</td><td>Imprimer</td></tr>'
+      + '<tr><td>Cmd+F</td><td>Rechercher et remplacer</td></tr>'
+      + '<tr><td>Cmd+Z / Cmd+Maj+Z</td><td>Annuler / rétablir</td></tr>'
+      + '<tr><td>Cmd+B / Cmd+I / Cmd+U</td><td>Gras / italique / souligné</td></tr>'
+      + '<tr><td>Cmd+A</td><td>Tout sélectionner</td></tr>'
+      + '<tr><td>Cmd + / Cmd -</td><td>Zoom avant / arrière</td></tr>'
+      + '<tr><td>Cmd+0</td><td>Zoom 100 %</td></tr>'
+      + '</table>';
+  }
+  html += '<button class="dlg-close" onclick="closeDialog()">Fermer</button>';
+  d.innerHTML = html;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+
+function closeDialog() {
+  document.getElementById('overlay').classList.add('hidden');
+  page.focus();
+}
+
+document.getElementById('overlay').addEventListener('mousedown', function (e) {
+  if (e.target === this) closeDialog();
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !document.getElementById('overlay').classList.contains('hidden')) closeDialog();
+});
+
+/* ---- Mode export PDF ---- */
+
 function enterPdfMode() {
   savedZoom = document.body.style.zoom || '1';
   document.body.style.zoom = '1';
@@ -437,11 +742,10 @@ function exitPdfMode() {
   document.body.style.zoom = savedZoom;
 }
 
-function setZoom(z) {
-  document.body.style.zoom = z;
-}
+/* ---- Initialisation ---- */
 
 document.execCommand('defaultParagraphSeparator', false, 'p');
+buildOutline();
 refresh();
 page.focus();
 </script>
