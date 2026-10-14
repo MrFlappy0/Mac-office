@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>MinWord</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, "Helvetica Neue", sans-serif; background: #ececf1; display: flex; flex-direction: column; overflow: hidden; }
+
+#toolbar { background: #f7f7fa; border-bottom: 1px solid #d8d8de; padding: 6px 10px; display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+#toolbar .group { display: flex; gap: 2px; align-items: center; padding-right: 8px; margin-right: 4px; border-right: 1px solid #ddd; }
+#toolbar .group:last-child { border-right: none; }
+#toolbar button { min-width: 28px; height: 26px; padding: 0 7px; background: #fff; border: 1px solid #c8c8ce; border-radius: 5px; font-size: 12px; color: #222; cursor: pointer; line-height: 1; }
+#toolbar button:hover { background: #e8e8ee; }
+#toolbar button.active { background: #d6e4ff; border-color: #7a9fdd; }
+#toolbar select { height: 26px; border: 1px solid #c8c8ce; border-radius: 5px; background: #fff; font-size: 12px; padding: 0 4px; max-width: 140px; }
+#toolbar button svg { display: block; margin: 0 auto; }
+label.color-well { position: relative; overflow: hidden; width: 28px; height: 26px; background: #fff; border: 1px solid #c8c8ce; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+label.color-well input { position: absolute; left: -30px; top: -30px; }
+.swatch { width: 14px; height: 14px; border: 1px solid #999; border-radius: 3px; }
+
+#findbar { display: none; gap: 6px; padding: 6px 10px; background: #fff8d6; border-bottom: 1px solid #e3d9a8; align-items: center; }
+#findbar.visible { display: flex; }
+#findbar input { height: 24px; border: 1px solid #c8c8ce; border-radius: 5px; padding: 0 6px; width: 170px; font-size: 12px; }
+#findbar button { height: 24px; padding: 0 8px; font-size: 12px; border: 1px solid #c8c8ce; border-radius: 5px; background: #fff; cursor: pointer; }
+
+#scroll { flex: 1; overflow: auto; padding: 26px 0 40px; }
+#page { background: #fff; width: 794px; min-height: 1000px; margin: 0 auto; padding: 94px 94px; box-shadow: 0 2px 14px rgba(0,0,0,.22); outline: none; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; color: #111; }
+#page p { margin: 0 0 10px; }
+#page h1 { font-size: 28pt; margin: 14pt 0 8pt; line-height: 1.2; }
+#page h2 { font-size: 20pt; margin: 12pt 0 7pt; line-height: 1.2; }
+#page h3 { font-size: 15pt; margin: 10pt 0 6pt; line-height: 1.2; }
+#page blockquote { border-left: 3px solid #aaa; padding-left: 12px; color: #444; margin: 8px 0; }
+#page pre { font-family: Menlo, monospace; background: #f4f4f4; padding: 8px; border-radius: 4px; margin: 8px 0; white-space: pre-wrap; }
+#page ul, #page ol { padding-left: 26px; margin: 0 0 10px; }
+#page table { border-collapse: collapse; margin: 10px 0; width: 100%; }
+#page td, #page th { border: 1px solid #666; padding: 5px 8px; min-width: 40px; }
+#page img { max-width: 100%; }
+#page hr { border: none; border-top: 1px solid #999; margin: 14px 0; }
+#page a { color: #0b57d0; }
+
+#statusbar { background: #f7f7fa; border-top: 1px solid #d8d8de; padding: 4px 12px; font-size: 11.5px; color: #555; display: flex; gap: 18px; align-items: center; }
+#statusbar select { height: 20px; font-size: 11.5px; border: 1px solid #c8c8ce; border-radius: 4px; background: #fff; }
+
+body.pdf-mode { background: #fff; }
+body.pdf-mode #toolbar, body.pdf-mode #findbar, body.pdf-mode #statusbar { display: none !important; }
+body.pdf-mode #scroll { overflow: visible; padding: 0; }
+body.pdf-mode #page { box-shadow: none; }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <div class="group">
+    <button title="Nouveau document (Cmd+N)" onclick="newDoc()">Nouveau</button>
+    <button title="Ouvrir (Cmd+O)" onclick="native({type:'open'})">Ouvrir</button>
+    <button title="Enregistrer en HTML (Cmd+S)" onclick="requestSave('html')">Enregistrer</button>
+    <button title="Enregistrer au format Word (.doc)" onclick="requestSave('doc')">Word (.doc)</button>
+    <button title="Exporter en PDF (Cmd+E)" onclick="native({type:'pdf'})">PDF</button>
+    <button title="Imprimer (Cmd+P)" onclick="native({type:'print'})">Imprimer</button>
+  </div>
+  <div class="group">
+    <button title="Annuler (Cmd+Z)" onclick="cmd('undo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
+    <button title="Rétablir (Cmd+Maj+Z)" onclick="cmd('redo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+  </div>
+  <div class="group">
+    <select id="blockSel" title="Style de paragraphe" onchange="restoreSelection(); applyBlock(this.value)">
+      <option value="p">Paragraphe</option>
+      <option value="h1">Titre 1</option>
+      <option value="h2">Titre 2</option>
+      <option value="h3">Titre 3</option>
+      <option value="blockquote">Citation</option>
+      <option value="pre">Code</option>
+    </select>
+    <select id="fontSel" title="Police" onchange="restoreSelection(); cmd('fontName', this.value)">
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Helvetica">Helvetica</option>
+      <option value="Arial">Arial</option>
+      <option value="Verdana">Verdana</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Palatino">Palatino</option>
+      <option value="Optima">Optima</option>
+      <option value="Courier New">Courier</option>
+      <option value="Menlo">Menlo</option>
+      <option value="Impact">Impact</option>
+      <option value="Comic Sans MS">Comic Sans MS</option>
+    </select>
+    <select id="sizeSel" title="Taille de police" onchange="setFontSize(this.value)">
+      <option value="8">8 pt</option>
+      <option value="10">10 pt</option>
+      <option value="12" selected>12 pt</option>
+      <option value="14">14 pt</option>
+      <option value="18">18 pt</option>
+      <option value="24">24 pt</option>
+      <option value="36">36 pt</option>
+      <option value="48">48 pt</option>
+      <option value="72">72 pt</option>
+    </select>
+  </div>
+  <div class="group">
+    <button id="btnBold" data-cmd="bold" title="Gras (Cmd+B)" onclick="cmd('bold')"><b>G</b></button>
+    <button id="btnItalic" data-cmd="italic" title="Italique (Cmd+I)" onclick="cmd('italic')"><i>I</i></button>
+    <button id="btnUnderline" data-cmd="underline" title="Souligné (Cmd+U)" onclick="cmd('underline')"><span style="text-decoration:underline">S</span></button>
+    <button id="btnStrike" data-cmd="strikeThrough" title="Barré" onclick="cmd('strikeThrough')"><span style="text-decoration:line-through">S</span></button>
+    <button data-cmd="superscript" title="Exposant" onclick="cmd('superscript')">x<sup>2</sup></button>
+    <button data-cmd="subscript" title="Indice" onclick="cmd('subscript')">x<sub>2</sub></button>
+  </div>
+  <div class="group">
+    <label class="color-well" title="Couleur du texte">
+      <span class="swatch" id="foreSwatch" style="background:#111111"></span>
+      <input type="color" id="foreInput" value="#111111" oninput="applyForeColor(this.value)">
+    </label>
+    <label class="color-well" title="Surlignage">
+      <span class="swatch" id="hiliteSwatch" style="background:#ffe066"></span>
+      <input type="color" id="hiliteInput" value="#ffe066" oninput="applyHilite(this.value)">
+    </label>
+  </div>
+  <div class="group">
+    <button data-cmd="justifyLeft" title="Aligner à gauche" onclick="cmd('justifyLeft')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></button>
+    <button data-cmd="justifyCenter" title="Centrer" onclick="cmd('justifyCenter')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg></button>
+    <button data-cmd="justifyRight" title="Aligner à droite" onclick="cmd('justifyRight')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg></button>
+    <button data-cmd="justifyFull" title="Justifier" onclick="cmd('justifyFull')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg></button>
+  </div>
+  <div class="group">
+    <button data-cmd="insertUnorderedList" title="Liste à puces" onclick="cmd('insertUnorderedList')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+    <button data-cmd="insertOrderedList" title="Liste numérotée" onclick="cmd('insertOrderedList')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+    <button title="Diminuer le retrait" onclick="cmd('outdent')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 3 12 9 6"/><line x1="3" y1="12" x2="13" y2="12"/><line x1="17" y1="6" x2="21" y2="6"/><line x1="17" y1="12" x2="21" y2="12"/><line x1="17" y1="18" x2="21" y2="18"/></svg></button>
+    <button title="Augmenter le retrait" onclick="cmd('indent')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 21 12 15 6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="7" y2="6"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="3" y1="18" x2="7" y2="18"/></svg></button>
+  </div>
+  <div class="group">
+    <button title="Insérer un lien" onclick="insertLink()">Lien</button>
+    <button title="Supprimer le lien" onclick="cmd('unlink')">Délier</button>
+    <button title="Insérer une image" onclick="native({type:'image'})">Image</button>
+    <button title="Insérer un tableau" onclick="insertTable()">Tableau</button>
+    <button title="Ligne horizontale" onclick="cmd('insertHorizontalRule')">Ligne</button>
+    <button title="Insérer la date du jour" onclick="insertDate()">Date</button>
+    <button title="Effacer la mise en forme" onclick="cmd('removeFormat')">Effacer</button>
+  </div>
+  <div class="group">
+    <button title="Rechercher et remplacer (Cmd+F)" onclick="toggleFind(true)">Rechercher</button>
+  </div>
+</div>
+
+<div id="findbar">
+  <input id="findInput" placeholder="Rechercher" onkeydown="handleFindKey(event)">
+  <input id="replaceInput" placeholder="Remplacer par" onkeydown="handleFindKey(event)">
+  <button onclick="findNext()">Suivant</button>
+  <button onclick="replaceOne()">Remplacer</button>
+  <button onclick="replaceAll()">Tout remplacer</button>
+  <button onclick="toggleFind(false)">Fermer</button>
+</div>
+
+<div id="scroll">
+  <div id="page" contenteditable="true" spellcheck="true"><p><br></p></div>
+</div>
+
+<div id="statusbar">
+  <span id="countWords">0 mot</span>
+  <span id="countChars">0 caractère</span>
+  <span style="flex:1"></span>
+  <span>Zoom</span>
+  <select id="zoomSel" onchange="setZoom(this.value)">
+    <option value="0.75">75 %</option>
+    <option value="1" selected>100 %</option>
+    <option value="1.25">125 %</option>
+    <option value="1.5">150 %</option>
+    <option value="2">200 %</option>
+  </select>
+</div>
+
+<script>
+var page = document.getElementById('page');
+var findbar = document.getElementById('findbar');
+var savedRange = null;
+var dirty = false;
+var savedZoom = '1';
+
+function native(obj) {
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.app) {
+    window.webkit.messageHandlers.app.postMessage(obj);
+  }
+}
+
+function cmd(c, v) {
+  page.focus();
+  document.execCommand(c, false, (v === undefined ? null : v));
+  refresh();
+}
+
+function refresh() {
+  syncToolbar();
+  refreshCounts();
+}
+
+document.addEventListener('selectionchange', function () {
+  var s = window.getSelection();
+  if (s.rangeCount > 0 && page.contains(s.getRangeAt(0).commonAncestorContainer)) {
+    savedRange = s.getRangeAt(0).cloneRange();
+  }
+  syncToolbar();
+});
+
+document.querySelectorAll('#toolbar button').forEach(function (b) {
+  b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+});
+
+function restoreSelection() {
+  page.focus();
+  if (savedRange) {
+    var s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(savedRange);
+  }
+}
+
+function state(c) {
+  try { return document.queryCommandState(c); } catch (e) { return false; }
+}
+
+function syncToolbar() {
+  document.querySelectorAll('#toolbar button[data-cmd]').forEach(function (b) {
+    b.classList.toggle('active', state(b.getAttribute('data-cmd')));
+  });
+  var sel = document.getElementById('blockSel');
+  var cur = '';
+  try { cur = (document.queryCommandValue('formatBlock') || '').replace(/[<>]/g, '').toLowerCase(); } catch (e) {}
+  if (!cur) cur = 'p';
+  if (sel.querySelector('option[value="' + cur + '"]')) sel.value = cur;
+}
+
+function refreshCounts() {
+  var t = page.innerText.replace(/\u00a0/g, ' ').trim();
+  var words = t ? t.split(/\s+/).length : 0;
+  document.getElementById('countWords').textContent = words + (words > 1 ? ' mots' : ' mot');
+  document.getElementById('countChars').textContent = t.length + (t.length > 1 ? ' caractères' : ' caractère');
+}
+
+function setDirty(d) {
+  if (d === dirty) return;
+  dirty = d;
+  native({ type: 'dirty', value: d });
+}
+
+page.addEventListener('input', function () {
+  setDirty(true);
+  refresh();
+});
+
+function newDoc() {
+  if (dirty && !window.confirm('Le document contient des modifications non enregistrées. Continuer sans enregistrer ?')) return;
+  page.innerHTML = '<p><br></p>';
+  dirty = false;
+  native({ type: 'new' });
+  refresh();
+}
+
+function openHTML(html) {
+  var doc = new DOMParser().parseFromString(html, 'text/html');
+  page.innerHTML = doc.body.innerHTML || '<p><br></p>';
+  dirty = false;
+  refresh();
+}
+
+function openText(text) {
+  var blocks = text.split(/\n\s*\n/);
+  var html = '';
+  for (var i = 0; i < blocks.length; i++) {
+    var esc = blocks[i].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+    html += '<p>' + (esc || '<br>') + '</p>';
+  }
+  page.innerHTML = html || '<p><br></p>';
+  dirty = false;
+  refresh();
+}
+
+function insertImage(dataUrl) {
+  restoreSelection();
+  document.execCommand('insertHTML', false, '<img src="' + dataUrl + '">');
+  setDirty(true);
+  refresh();
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/"/g, '&quot;');
+}
+
+function insertLink() {
+  restoreSelection();
+  var sel = window.getSelection().toString();
+  var url = window.prompt('Adresse du lien :', 'https://');
+  if (!url) return;
+  if (sel) {
+    document.execCommand('createLink', false, url);
+  } else {
+    document.execCommand('insertHTML', false, '<a href="' + escapeAttr(url) + '">' + escapeHtml(url) + '</a>');
+  }
+  setDirty(true);
+  refresh();
+}
+
+function insertTable() {
+  restoreSelection();
+  var r = parseInt(window.prompt('Nombre de lignes :', '3'), 10);
+  if (!r || r < 1) return;
+  var c = parseInt(window.prompt('Nombre de colonnes :', '3'), 10);
+  if (!c || c < 1) return;
+  var html = '<table><tbody>';
+  for (var i = 0; i < r; i++) {
+    html += '<tr>';
+    for (var j = 0; j < c; j++) html += '<td>&nbsp;</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table><p><br></p>';
+  document.execCommand('insertHTML', false, html);
+  setDirty(true);
+  refresh();
+}
+
+function insertDate() {
+  restoreSelection();
+  var d = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.execCommand('insertText', false, d);
+  setDirty(true);
+  refresh();
+}
+
+function applyBlock(v) {
+  cmd('formatBlock', '<' + v + '>');
+}
+
+function setFontSize(size) {
+  restoreSelection();
+  document.execCommand('fontSize', false, '7');
+  var fonts = page.querySelectorAll('font[size="7"]');
+  for (var i = 0; i < fonts.length; i++) {
+    var f = fonts[i];
+    var span = document.createElement('span');
+    span.style.fontSize = size + 'pt';
+    while (f.firstChild) span.appendChild(f.firstChild);
+    f.parentNode.replaceChild(span, f);
+  }
+  setDirty(true);
+}
+
+function applyForeColor(v) {
+  restoreSelection();
+  cmd('foreColor', v);
+  document.getElementById('foreSwatch').style.background = v;
+}
+
+function applyHilite(v) {
+  restoreSelection();
+  if (!document.execCommand('hiliteColor', false, v)) {
+    document.execCommand('backColor', false, v);
+  }
+  document.getElementById('hiliteSwatch').style.background = v;
+  refresh();
+}
+
+function requestSave(ext) {
+  native({ type: 'save', ext: ext, html: page.innerHTML });
+}
+
+function requestSaveText() {
+  native({ type: 'saveText', text: page.innerText });
+}
+
+function toggleFind(show) {
+  findbar.classList.toggle('visible', show);
+  if (show) {
+    var i = document.getElementById('findInput');
+    i.focus();
+    i.select();
+  } else {
+    page.focus();
+  }
+}
+
+function handleFindKey(e) {
+  if (e.key === 'Enter') { e.preventDefault(); findNext(); }
+  if (e.key === 'Escape') { e.preventDefault(); toggleFind(false); }
+}
+
+function findNext() {
+  var term = document.getElementById('findInput').value;
+  if (!term) return;
+  if (!window.find(term, false, false, true)) {
+    window.getSelection().removeAllRanges();
+  }
+}
+
+function replaceOne() {
+  var term = document.getElementById('findInput').value;
+  var rep = document.getElementById('replaceInput').value;
+  var cur = savedRange ? savedRange.toString() : '';
+  if (cur && term && cur.toLowerCase() === term.toLowerCase()) {
+    restoreSelection();
+    document.execCommand('insertText', false, rep);
+    setDirty(true);
+  }
+  findNext();
+}
+
+function replaceAll() {
+  var term = document.getElementById('findInput').value;
+  var rep = document.getElementById('replaceInput').value;
+  if (!term) return;
+  page.focus();
+  var r = document.createRange();
+  r.selectNodeContents(page);
+  r.collapse(true);
+  var s = window.getSelection();
+  s.removeAllRanges();
+  s.addRange(r);
+  var n = 0;
+  while (n < 2000 && window.find(term, false, false, false)) {
+    document.execCommand('insertText', false, rep);
+    n++;
+  }
+  if (n > 0) setDirty(true);
+  refresh();
+}
+
+function enterPdfMode() {
+  savedZoom = document.body.style.zoom || '1';
+  document.body.style.zoom = '1';
+  document.body.classList.add('pdf-mode');
+  document.getElementById('scroll').scrollTop = 0;
+}
+
+function exitPdfMode() {
+  document.body.classList.remove('pdf-mode');
+  document.body.style.zoom = savedZoom;
+}
+
+function setZoom(z) {
+  document.body.style.zoom = z;
+}
+
+document.execCommand('defaultParagraphSeparator', false, 'p');
+refresh();
+page.focus();
+</script>
+</body>
+</html>
